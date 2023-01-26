@@ -290,3 +290,28 @@ class Birthday(Field):
             print("Wrong date, should be - dd.mm.yyyy, only numbers")
         else:
             return birthday
+
+
+
+class Notebook(UserDict):
+    def add_note(self,tags,notes):
+        self.data[tags.value]=notes.note
+    
+    def find_by_keyword(self,keyword):
+        res={
+            keyword:[]
+            }
+        for tag, notes in self.data.items():
+            if keyword in tag.split(', '):
+                if  notes not in res[keyword]:
+                    res[keyword].append(notes)
+        return res
+
+class Tags():
+    def __init__(self,tags):
+        self.value=tags
+
+class Notes():
+    def __init__(self,note):
+        self.note=note
+
