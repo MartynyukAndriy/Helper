@@ -18,4 +18,3 @@ if __name__ == "__main__":
             break
         else:
             print("Wrong command")
-        print("Hello")
