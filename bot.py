@@ -352,3 +352,9 @@ def main():
             continue
         print(COMMANDS[command]())
 
+
+if __name__ == "__main__":
+    if CONTACT_SERIALIZATION_PATH.exists():
+        ADDRESS_BOOK.deserialize(CONTACT_FILE_NAME)
+    main()
+    ADDRESS_BOOK.serialize()
