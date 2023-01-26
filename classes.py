@@ -4,7 +4,6 @@ import pickle
 from pathlib import Path
 import re
 import copy
-import os
 
 
 FILE_NAME = "addressbook.bin"
