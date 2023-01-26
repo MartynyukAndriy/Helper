@@ -167,7 +167,37 @@ def change():
                             else:
                                 break
                 elif command.lower() == "replace":
-                    pass
+                    while True:
+                        old_phone = input(
+                            "Type phone number you want to change: ")
+                        if old_phone.lower() == "cancel":
+                            return "Changing has been canceled"
+                        old_phone = classes.Phone(old_phone)
+                        phones_list = [
+                            phone.value for phone in ADDRESS_BOOK.get_phones(contact)]
+                        if old_phone.value in phones_list:
+                            while True:
+                                new_phone = input("Type a new phone: ")
+                                if new_phone.lower() == "cancel":
+                                    return "Changing has been canceled"
+                                new_phone = classes.Phone(new_phone)
+                                if new_phone.value == None:
+                                    while True:
+                                        answer = input(
+                                            "Would you like try one more time? (y/n) ")
+                                        if answer.lower() == "y":
+                                            break
+                                        elif answer.lower() in ["cancel", "n"]:
+                                            return "Changing has been canceled"
+                                        else:
+                                            print("Wrong command")
+                                else:
+                                    phones = ADDRESS_BOOK.get_phones(contact)
+                                    for i in range(len(phones)):
+                                        if phones[i].value == old_phone.value:
+                                            phones[i] = new_phone
+                                    ADDRESS_BOOK.set_phones(contact, phones)
+                                    return f"Phone {old_phone.value} has been changed to {new_phone.value}"
                 else:
                     answer = input(
                         "Command is incorrect, would you like to try one more time? (y/n): ")

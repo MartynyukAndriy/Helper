@@ -13,6 +13,9 @@ SERIALIZATION_PATH = Path(FILE_NAME)
 class AddressBook(UserDict):
     """Creating user's addressbooks"""
 
+    def __eq__(self, other: object) -> bool:
+        return self.value == other.value
+
     def add_record(self, record):
         self.data[record.name.value] = record
 
