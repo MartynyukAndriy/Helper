@@ -1,4 +1,5 @@
 import bot
+import sort
 
 if __name__ == "__main__":
     while True:
@@ -12,7 +13,7 @@ if __name__ == "__main__":
         elif work_with.lower() == "notes":
             pass
         elif work_with.lower() == "files":
-            pass
+            sort.clean()
         elif work_with.lower() in ["cancel", "close", "exit", "good bye"]:
             print("Bye")
             break
