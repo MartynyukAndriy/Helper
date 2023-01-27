@@ -30,6 +30,7 @@ def get_folder_name():
             DIR_PATH = input(
                 "Please type a path to the folder you want to clean: ")
             if DIR_PATH in ["cancel", "close", "exit"]:
+                DIR_PATH = ""
                 return print("Work with files have been canceled")
             path = Path(DIR_PATH)
             if not path.exists():
@@ -44,6 +45,8 @@ def get_folder_name():
                     else:
                         print("Wrong command")
                         continue
+            else:
+                return print(f"Cleaning {DIR_PATH} folder")
 
 
 names_dict = {"images": [],
@@ -199,6 +202,7 @@ def clean():
                                 for value in names_dict["archives"]])
         if existed_archives:
             unpack_archives(DIR_PATH)
+        print(f"Folder {DIR_PATH} has been cleaned")
 
 
 if __name__ == "__main__":
