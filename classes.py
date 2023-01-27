@@ -4,6 +4,7 @@ import pickle
 from pathlib import Path
 import re
 import copy
+import os
 
 
 FILE_NAME = "addressbook.bin"
@@ -291,17 +292,22 @@ class Birthday(Field):
         else:
             return birthday
 
+
 class Notes:
     def __init__(self, value):
         self.value = value
+
     def __repr__(self):
         return f'{self.value}'
+
 
 class Tags:
     def __init__(self, value):
         self.value = value
+
     def __repr__(self):
         return f'{self.value}'
+
 
 class RecordNote:
     def __init__(self, note: Notes, tag: Tags = None):
@@ -332,7 +338,7 @@ class Notebook(UserDict):
     def __repr__(self):
         return f'{self.data}'
 
-    def add_note(self, note: Note):
+    def add_note(self, note: Notes):
         my_note = Notes(note)
         rec = RecordNote(my_note)
         self.data[rec.note.value] = rec
@@ -355,4 +361,3 @@ class Notebook(UserDict):
 
         with open('addressbook.bin', 'wb') as file:
             pickle.dump(addressbook, file)
-

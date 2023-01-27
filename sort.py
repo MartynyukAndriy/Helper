@@ -4,7 +4,7 @@ import os
 import shutil
 import zipfile
 import tarfile
-from clean_folder.translate import normalize
+from translate import normalize
 
 
 DIR_PATH = ""
