@@ -373,9 +373,9 @@ class Notebook(UserDict):
         return res
 
     def load_file(self):
-        if os.path.isfile('addressbook.bin'):
-            with open('addressbook.bin', 'rb') as file:
-                addressbook = pickle.load(file)
+        if os.path.isfile('notebook.bin'):
+            with open('notebook.bin', 'rb') as file:
+                notebook = pickle.load(file)
 
-        with open('addressbook.bin', 'wb') as file:
-            pickle.dump(addressbook, file)
+        with open('notebook.bin', 'wb') as file:
+            pickle.dump(notebook, file)
