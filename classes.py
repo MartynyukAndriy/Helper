@@ -291,27 +291,68 @@ class Birthday(Field):
         else:
             return birthday
 
+class Notes:
+    def __init__(self, value):
+        self.value = value
+    def __repr__(self):
+        return f'{self.value}'
+
+class Tags:
+    def __init__(self, value):
+        self.value = value
+    def __repr__(self):
+        return f'{self.value}'
+
+class RecordNote:
+    def __init__(self, note: Notes, tag: Tags = None):
+        self.note = note
+        self.tags = []
+        if tag:
+            self.tags.append(tag)
+
+    def __repr__(self):
+        if len(self.tags) > 0:
+            return f'Tags: {[i.value for i in self.tags]}\n{self.note.value}'
+        return f'{self.note.value}'
+
+    def add_tag(self):
+        while True:
+            tag_input = input('Please, add tag:')
+            my_tag = Tags(tag_input)
+            if tag_input == "":
+                break
+            if my_tag.value not in [i.value for i in self.tags]:
+                self.tags.append(my_tag)
 
 
 class Notebook(UserDict):
-    def add_note(self,tags,notes):
-        self.data[tags.value]=notes.note
-    
-    def find_by_keyword(self,keyword):
-        res={
-            keyword:[]
-            }
+    def __init__(self):
+        self.data = {}
+
+    def __repr__(self):
+        return f'{self.data}'
+
+    def add_note(self, note: Note):
+        my_note = Notes(note)
+        rec = RecordNote(my_note)
+        self.data[rec.note.value] = rec
+        return rec.add_tag()
+
+    def find_by_keyword(self, keyword):
+        res = {
+            keyword: []
+        }
         for tag, notes in self.data.items():
             if keyword in tag.split(', '):
-                if  notes not in res[keyword]:
+                if notes not in res[keyword]:
                     res[keyword].append(notes)
         return res
 
-class Tags():
-    def __init__(self,tags):
-        self.value=tags
+    def load_file(self):
+        if os.path.isfile('addressbook.bin'):
+            with open('addressbook.bin', 'rb') as file:
+                addressbook = pickle.load(file)
 
-class Notes():
-    def __init__(self,note):
-        self.note=note
+        with open('addressbook.bin', 'wb') as file:
+            pickle.dump(addressbook, file)
 
