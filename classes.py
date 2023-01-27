@@ -300,6 +300,24 @@ class Notes:
     def __repr__(self):
         return f'{self.value}'
 
+    def search_notes(self, search_text):
+        search_result = {}
+        for key, value in self.notes.items():
+            if search_text in value.note_text:
+                search_result[key] = value
+        return search_result
+
+    def sort_notes(self):
+        return dict(sorted(self.notes.items(), key=lambda item: item[1].note_text))
+
+    def save_notes(self):
+        with open('notes.pickle', 'wb') as file:
+            pickle.dump(self.notes, file)
+
+    def load_notes(self):
+        with open('notes.pickle', 'rb') as file:
+            self.notes = pickle.load(file)
+
 
 class Tags:
     def __init__(self, value):
