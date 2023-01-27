@@ -14,6 +14,7 @@ if __name__ == "__main__":
             pass
         elif work_with.lower() == "files":
             sort.clean()
+            sort.DIR_PATH = ""
         elif work_with.lower() in ["cancel", "close", "exit", "good bye"]:
             print("Bye")
             break
