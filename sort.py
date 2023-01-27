@@ -106,37 +106,40 @@ def remove_files(path):
     """
     This function remove files to correct directory
     """
+    steps = 0
     remove_files_info_logs = []
     counter = 0
     obj_path = Path(path)
-    for file in obj_path.iterdir():
-        try:
-            if file.is_dir():
-                if file.name in FOLDER_NAMES:
-                    continue
-                else:
-                    remove_files(f'{path}\{file.name}')
-                try:
-                    os.remove(file)
-                except:
-                    remove_files_info_logs.append(
-                        f"Folder {file} is not empty")
-            elif file.is_file():
-                for key, values in names_dict.items():
-                    if file.name in values:
-                        try:
-                            shutil.move(
-                                rf"{file}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
-                        except shutil.Error:
-                            os.rename(str(file), str(
-                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}'))
-                            new_name = str(
-                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}')
-                            shutil.move(
-                                rf"{new_name}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
-                            counter += 1
-        except Exception as e:
-            remove_files_info_logs.append(e)
+    while steps < 2:
+        for file in obj_path.iterdir():
+            try:
+                if file.is_dir():
+                    if file.name in FOLDER_NAMES:
+                        continue
+                    else:
+                        remove_files(f'{path}\{file.name}')
+                    try:
+                        os.remove(file)
+                    except:
+                        remove_files_info_logs.append(
+                            f"Folder {file} is not empty")
+                elif file.is_file():
+                    for key, values in names_dict.items():
+                        if file.name in values:
+                            try:
+                                shutil.move(
+                                    rf"{file}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
+                            except shutil.Error:
+                                os.rename(str(file), str(
+                                    f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}'))
+                                new_name = str(
+                                    f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}')
+                                shutil.move(
+                                    rf"{new_name}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
+                                counter += 1
+            except Exception as e:
+                remove_files_info_logs.append(e)
+        steps += 1
     return f"Remove files info logs: {remove_files_info_logs}"
 
 
