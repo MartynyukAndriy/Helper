@@ -292,21 +292,6 @@ class Birthday(Field):
         else:
             return birthday
 
-class Name:
-
-    def __init__(self, value):
-        self.value = value
-
-    def __repr__(self):
-        return f'{self.value}'
-
-class Status:
-
-    def __init__(self, value):
-        self.value = value
-
-    def __repr__(self):
-        return f'{self.value}'
 
 class Notes:
     def __init__(self, value):
@@ -314,6 +299,24 @@ class Notes:
 
     def __repr__(self):
         return f'{self.value}'
+
+    def search_notes(self, search_text):
+        search_result = {}
+        for key, value in self.notes.items():
+            if search_text in value.note_text:
+                search_result[key] = value
+        return search_result
+
+    def sort_notes(self):
+        return dict(sorted(self.notes.items(), key=lambda item: item[1].note_text))
+
+    def save_notes(self):
+        with open('notes.pickle', 'wb') as file:
+            pickle.dump(self.notes, file)
+
+    def load_notes(self):
+        with open('notes.pickle', 'rb') as file:
+            self.notes = pickle.load(file)
 
 
 class Tags:
@@ -336,9 +339,17 @@ class RecordNote:
             return f'Tags: {[i.value for i in self.tags]}\n{self.note.value}'
         return f'{self.note.value}'
 
+    def add_tag(self):
+        while True:
+            tag_input = input('Please, add tag:')
+            my_tag = Tags(tag_input)
+            if tag_input == "":
+                break
+            if my_tag.value not in [i.value for i in self.tags]:
+                self.tags.append(my_tag)
 
 
-class NoteBook(UserDict):
+class Notebook(UserDict):
     def __init__(self):
         self.data = {}
 
@@ -351,22 +362,7 @@ class NoteBook(UserDict):
         self.data[rec.note.value] = rec
         return rec.add_tag()
 
-    def delete_note(self, rec: RecordNote):
-        for a, v in self.data.items():
-            if v.note == rec.note:
-                deleted_note = a.note
-                self.data.pop(a)
-                return deleted_note
-    def add_tage(self):
-        while True:
-            tag_input = input('Please, add tag: ')
-            my_tag = Tags(tag_input)
-            if tag_input == "":
-                break
-            if my_tag.value not in [i.value for i in self.tags]:
-                self.tags.append(my_tag)
-
-    def search(self, keyword):
+    def find_by_keyword(self, keyword):
         res = {
             keyword: []
         }
@@ -375,15 +371,6 @@ class NoteBook(UserDict):
                 if notes not in res[keyword]:
                     res[keyword].append(notes)
         return res
-
-    def get_tags(self):
-        tags_list = []
-        for rec in self.values():
-            for t in rec.tags:
-                tags_list.append(str(t))
-        if len(tags_list) > 0:
-            tags_set = sorted(set(tags_list), reverse=False)
-            return tags_set
 
     def load_file(self):
         if os.path.isfile('notebook.bin'):

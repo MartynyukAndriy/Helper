@@ -17,11 +17,28 @@ def hello():
 
 
 def add():
-    name = input("Type a contact name: ")
-    if name.lower() == "cancel":
-        return "Adding a new contact has been canceled"
-    else:
-        name = classes.Name(name)
+    while True:
+        name = input("Type a contact name: ")
+        if name.lower() == "cancel":
+            return "Adding a new contact has been canceled"
+        elif name in ADDRESS_BOOK.data.keys():
+            while True:
+                answer = input(
+                    "You have already such contact, do you want to rewrite it? (y/n) ")
+                if answer.lower() == "y":
+                    name = classes.Name(name)
+                    break
+                elif answer.lower() == "cancel":
+                    return "Adding a new contact has been canceled"
+                elif answer.lower() == "n":
+                    break
+            if answer.lower() == "y":
+                break
+            else:
+                continue
+        else:
+            name = classes.Name(name)
+            break
     phone = input(f"Type {name.value}'s phone number: ")
     if phone.lower() == "cancel":
         return "Adding a new contact has been canceled"
@@ -375,7 +392,29 @@ def main():
             print(COMMANDS["hello"]())
             continue
         if command == "show":
-            print(COMMANDS["show"]())
+            counter = 1
+            print(
+                f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+            for info in COMMANDS["show"]().values():
+                name = info.name.value if len(
+                    info.name.value) < 20 else name[:17]+'...'
+                if len(info.phones) == 1:
+                    contacts = info.phones[0].value
+                elif len(info.phones) > 1:
+                    contacts = [contact.value for contact in info.phones]
+                    contacts = ", ".join(contacts)
+                    contacts = contacts if len(
+                        contacts) < 34 else contacts[:32]+"..."
+                else:
+                    contacts = "None"
+                address = info.address.value if info.address.value else "None"
+                address = address if len(address) < 35 else address[:32]+"..."
+                email = info.email.value if info.email.value else "None"
+                email = email if len(email) < 35 else email[:32]+"..."
+                birthday = info.birthday.value if info.birthday.value else "None"
+                print(
+                    f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+                counter += 1
             continue
         if command == "wrong_command":
             print("Wrong command")
