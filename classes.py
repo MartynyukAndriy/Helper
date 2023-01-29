@@ -84,22 +84,97 @@ class AddressBook(UserDict):
         else:
             return "Nothing found"
 
+    def show_contacts_by_name(self, data):
+        counter = 1
+        print(
+            f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+        for info in data:
+            name = info.name.value if len(
+                info.name.value) < 20 else name[:17]+'...'
+            if len(info.phones) == 1:
+                contacts = info.phones[0].value
+            elif len(info.phones) > 1:
+                contacts = [contact.value for contact in info.phones]
+                contacts = ", ".join(contacts)
+                contacts = contacts if len(
+                    contacts) < 34 else contacts[:32]+"..."
+            else:
+                contacts = "None"
+            address = info.address.value if info.address.value else "None"
+            address = address if len(address) < 35 else address[:32]+"..."
+            email = info.email.value if info.email.value else "None"
+            email = email if len(email) < 35 else email[:32]+"..."
+            birthday = info.birthday.value if info.birthday.value else "None"
+            print(
+                f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+            counter += 1
+
     def find_info_by_phone(self, search_phone):
         users_search = []
         for user, info in self.data.items():
             if info.phones and info.phones[0].value != None:
                 for phone in info.phones:
-                    if str(search_phone) in phone.value:
+                    if str(search_phone) in phone.value and self.data[user] not in users_search:
                         users_search.append(self.data[user])
         if users_search:
             return users_search
         else:
             return "Nothing found"
 
-    def show_contacts_by_birthday(self, days):
-        result = [self.data[record] for record in self.data if self.data[record].birthday and self.data[record].days_to_birthday()
+    def show_contacts_by_phone(self, data):
+        counter = 1
+        print(
+            f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+        for info in data:
+            name = info.name.value if len(
+                info.name.value) < 20 else name[:17]+'...'
+            if len(info.phones) == 1:
+                contacts = info.phones[0].value
+            elif len(info.phones) > 1:
+                contacts = [contact.value for contact in info.phones]
+                contacts = ", ".join(contacts)
+                contacts = contacts if len(
+                    contacts) < 34 else contacts[:32]+"..."
+            else:
+                contacts = "None"
+            address = info.address.value if info.address.value else "None"
+            address = address if len(address) < 35 else address[:32]+"..."
+            email = info.email.value if info.email.value else "None"
+            email = email if len(email) < 35 else email[:32]+"..."
+            birthday = info.birthday.value if info.birthday.value else "None"
+            print(
+                f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+            counter += 1
+
+    def get_contacts_by_birthday(self, days):
+        result = [self.data[record] for record in self.data if self.data[record].birthday.value != None and self.data[record].days_to_birthday()
                   <= days]
         return result
+
+    def show_contacts_by_birthday(self, days):
+        counter = 1
+        print(
+            f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+        for info in self.get_contacts_by_birthday(days):
+            name = info.name.value if len(
+                info.name.value) < 20 else name[:17]+'...'
+            if len(info.phones) == 1:
+                contacts = info.phones[0].value
+            elif len(info.phones) > 1:
+                contacts = [contact.value for contact in info.phones]
+                contacts = ", ".join(contacts)
+                contacts = contacts if len(
+                    contacts) < 34 else contacts[:32]+"..."
+            else:
+                contacts = "None"
+            address = info.address.value if info.address.value else "None"
+            address = address if len(address) < 35 else address[:32]+"..."
+            email = info.email.value if info.email.value else "None"
+            email = email if len(email) < 35 else email[:32]+"..."
+            birthday = info.birthday.value if info.birthday.value else "None"
+            print(
+                f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+            counter += 1
 
 
 class Record:

@@ -1,10 +1,11 @@
 import bot
 import sort
+from pathlib import Path
 
 if __name__ == "__main__":
     while True:
         work_with = input(
-            "With part of helper you want to work? (contacts / notes / files) ")
+            "With what part of helper you want to work? (contacts / notes / files) ")
         if work_with.lower() == "contacts":
             if bot.CONTACT_SERIALIZATION_PATH.exists():
                 bot.ADDRESS_BOOK.deserialize(bot.CONTACT_FILE_NAME)
