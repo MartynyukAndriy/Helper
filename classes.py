@@ -6,7 +6,6 @@ import re
 import copy
 import os
 
-
 FILE_NAME = "addressbook.bin"
 SERIALIZATION_PATH = Path(FILE_NAME)
 
@@ -64,7 +63,7 @@ class AddressBook(UserDict):
         if n > records_num:
             n = records_num
         for i in range(0, records_num, n):
-            yield [self.data[records[i+j]].show_contact() for j in range(n) if i + j < records_num]
+            yield [self.data[records[i + j]].show_contact() for j in range(n) if i + j < records_num]
 
     def serialize(self, file_name="addressbook.bin"):
         with open(file_name, "wb") as file:
@@ -97,7 +96,8 @@ class AddressBook(UserDict):
             return "Nothing found"
 
     def show_contacts_by_birthday(self, days):
-        result = [self.data[record] for record in self.data if self.data[record].birthday and self.data[record].days_to_birthday()
+        result = [self.data[record] for record in self.data if
+                  self.data[record].birthday and self.data[record].days_to_birthday()
                   <= days]
         return result
 
@@ -151,7 +151,7 @@ class Record:
         if int(delta.days) >= 0:
             return delta.days
         else:
-            birthday = datetime(year=int(datetime.now().year)+1,
+            birthday = datetime(year=int(datetime.now().year) + 1,
                                 month=int(self.birthday.value[3:5]), day=int(self.birthday.value[:2])).date()
             delta = birthday - time_now
             return delta.days
@@ -292,21 +292,23 @@ class Birthday(Field):
         else:
             return birthday
 
-class Name:
+
+class Note_Name:
 
     def __init__(self, value):
         self.value = value
 
     def __repr__(self):
         return f'{self.value}'
+
 
 class Status:
-
     def __init__(self, value):
         self.value = value
 
     def __repr__(self):
         return f'{self.value}'
+
 
 class Notes:
     def __init__(self, value):
@@ -325,8 +327,8 @@ class Tags:
 
 
 class RecordNote:
-    def __init__(self,name, note: Notes, tag: Tags = None):
-        self.name=name
+    def __init__(self, name: Note_Name, note: Notes, tag: Tags = None):
+        self.name = name
         self.note = note
         self.tags = []
         if tag:
@@ -338,7 +340,6 @@ class RecordNote:
         return f'{self.note.value}'
 
 
-
 class NoteBook(UserDict):
     def __init__(self):
         self.data = {}
@@ -346,39 +347,40 @@ class NoteBook(UserDict):
     def __repr__(self):
         return f'{self.data}'
 
-    def add_note(self,name, note: Notes,tag):
-        my_note=Notes(note)
-        tags=Tags(tag)
-        rec=RecordNote(name,my_note,tags)
+    def add_note(self, name: Note_Name, note: Notes, tag):
+        my_note = Notes(note)
+        tags = Tags(tag)
+        rec = RecordNote(name, my_note, tags)
         self.data[rec.name] = rec
         return 'Ok'
 
-    def change_tag(self,name,tags):
-        new_tags=Tags(tags)
+    def change_status(self):
+        if self.value == "In progress":
+            self.value = "done"
+        else:
+            self.value = "In progress"
+
+    def change_tag(self, name, tags):
+        new_tags = Tags(tags)
         for k in self.data:
-            if k==name:
-                self.data[k].tags=new_tags
-    
-    def change_name(self,name,new_name):
+            if k == name:
+                self.data[k].tags = new_tags
+
+    def change_name(self, name, new_name):
         for k in self.data:
-            if k==name:
-                self.data[k].name=new_name
-        
-    def сhange_tag(self,name,tags):
+            if k == name:
+                self.data[k].name = new_name
+
+    def сhange_tag(self, name, tags):
         for k in self.data.items():
-            if k==name:
-                self.data[k].name=tags
-    
-    def change_note(self,name,new_note):
-        new_note=Notes(new_note)
+            if k == name:
+                self.data[k].name = tags
+
+    def change_note(self, name, new_note):
+        new_note = Notes(new_note)
         for k in self.data:
-            if k==name:
-                self.data[k].note=new_note
-
-
-        
-        
-        
+            if k == name:
+                self.data[k].note = new_note
 
     def delete_note(self, rec: RecordNote):
         for a, v in self.data.items():
@@ -386,7 +388,8 @@ class NoteBook(UserDict):
                 deleted_note = a.note
                 self.data.pop(a)
                 return deleted_note
-    def add_tag(self,new_tag):
+
+    def add_tag(self, new_tag):
         my_tag = Tags(new_tag)
         if my_tag.value not in [i.value for i in self.tags]:
             self.tags.append(my_tag)
@@ -417,6 +420,3 @@ class NoteBook(UserDict):
 
         with open('notebook.bin', 'wb') as file:
             pickle.dump(notebook, file)
-
-
-
