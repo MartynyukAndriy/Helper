@@ -410,14 +410,14 @@ class NoteBook(UserDict):
         if len(tags_list) > 0:
             tags_set = sorted(set(tags_list), reverse=False)
             return tags_set
-
-    def load_file(self):
+    
+    def deserialize(self):
         if os.path.isfile('notebook.bin'):
             with open('notebook.bin', 'rb') as file:
                 notebook = pickle.load(file)
 
+    def serialize(self, notebook = 'notebook.bin'):
         with open('notebook.bin', 'wb') as file:
             pickle.dump(notebook, file)
-
 
 
