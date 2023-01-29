@@ -6,6 +6,21 @@ NOTES_BOOK = classes.NoteBook()
 def hello():
     return "How can I help you?"
 
+def help():
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*90)
+    print(f"add:     Adds a note to the notebook.\n","-"*90) 
+    print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n","-"*90)   
+    print(f"change:  Changes the information in the note: name / note / tag / status.\n","-"*90)
+    print(f"show:    Show notes as much as the user specifies.\n","-"*90)
+    print(f"showall: Show all notes.\n","-"*90)
+    print(f"del:     Deleting a note, or deleting completed notes.\n","-"*90)
+    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*90)
+    print(f"good bye, close, exit: Exit the program.\n","-"*90)
+    command = input("Press any key to return. ")
+    if command.lower() == "cancel":
+        return "Exit from the help menu. " 
+    else:
+        main()
 
 def add():
     name = input("What do you want to record?: ")
@@ -263,6 +278,7 @@ def end_work():
 
 
 COMMANDS = {"hello": hello,
+            "help": help,
             "add": add,
             "search": search,
             "change": change,
@@ -276,6 +292,8 @@ def parser(command):
         return "hello"
     if command.lower() in ["good bye", "close", "exit"]:
         return "end_work"
+    if command.lower() == "help":
+        return "help"
     if command.split()[0].lower() == "add":
         return "add"
     if command.split()[0].lower() == "search":
@@ -292,13 +310,16 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input(">> ")
+        user_command = input("If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
             break
         if command == "hello":
             print(COMMANDS["hello"]())
+            continue
+        if command == "help":
+            print(COMMANDS["help"]())
             continue
         if command == "show":
             print(COMMANDS["show"]())

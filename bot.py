@@ -16,6 +16,23 @@ def hello():
     return "How can I help you?"
 
 
+def help():
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*115)
+    print(f"add:     Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n","-"*115)
+    print(f"search:  Searches for contacts in the address book by the following fields: name / phone.\n","-"*115)
+    print(f"change:  Changes the information in the contact: name / phone / address / email / birthday.\n","-"*115)
+    print(f"show:    Show contacts as much as the user specifies.\n","-"*115)
+    print(f"showall: Show all notes.\n","-"*115)
+    print(f"del:     Deleting a contact, or deleting phone / address / email / birthday in contact.\n","-"*115)
+    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*115)
+    print(f"birthdays: Shows the number of days until someone's birthday.\n","-"*115)
+    print(f"good bye, close, exit: Exit the program.\n","-"*115)
+    command = input("Press any key to return. ")
+    if command.lower() == "cancel":
+        return "Exit from the help menu. " 
+    else:
+        main()
+
 def add():
     while True:
         name = input("Type a contact name: ")
@@ -397,6 +414,7 @@ def end_work():
 
 
 COMMANDS = {"hello": hello,
+            "help": help,
             "add": add,
             "birthdays": birthdays,
             "search": search,
@@ -412,6 +430,8 @@ def parser(command):
         return "hello"
     if command.lower() in ["good bye", "close", "exit"]:
         return "end_work"
+    if command.lower() == "help":
+        return "help"
     if command.split()[0].lower() == "add":
         return "add"
     if command.split()[0].lower() == "search":
@@ -432,13 +452,16 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input(">> ")
+        user_command = input("If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
             break
         if command == "hello":
             print(COMMANDS["hello"]())
+            continue
+        if command == "help":
+            print(COMMANDS["help"]())
             continue
         if command == "showall":
             COMMANDS[command]()
