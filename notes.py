@@ -1,4 +1,8 @@
 import classes
+from pathlib import Path
+
+NOTEBOOK_FILE_NAME = "notebook.bin"
+NOTEBOOK_SERIALIZATION_PATH = Path(NOTEBOOK_FILE_NAME)
 
 NOTES_BOOK = classes.NoteBook()
 
@@ -8,7 +12,7 @@ def hello():
 
 
 def add():
-    name = input("What do you want to record?: ")
+    name = input("Type a theme to your record: ")
     while name == "":
         print("Note name cannot be empty!")
         name = input("What do you want to record?: ")
@@ -32,20 +36,19 @@ def add():
         else:
             name = classes.NoteName(name)
             break
-
+    name = classes.NoteName(name)
     note = input(f"Type {name.value}'s note: ")
     if note.lower() == "cancel":
         return "Adding a new note has been canceled"
     else:
-        note = classes.Note(note)
-    tag = input(f"Type {tag.value}'s note: ")
+        note = classes.Notes(note)
+    tag = input(f"Type {name.value}'s tags: ")
     if tag.lower() == "cancel":
         return "Adding a new tag has been canceled"
     else:
-        tag = classes.Tag(tag)
-
-    record = classes.Record(name, note, tag)
-    NOTES_BOOK.add_record(record)
+        tag = classes.Tags(tag)
+    record = classes.RecordNote(name, note, tag)
+    NOTES_BOOK.add_note(record)
     return f"Contact '{name.value}' has been saved"
 
 
@@ -56,8 +59,8 @@ def search():
             result = input("What you want to find: ")
             if result == "cancel":
                 return "Searching has been canceled"
-            if NOTES_BOOK.find_info_by_name(result.lower()):
-                return NOTES_BOOK.find_info_by_name(result.lower())
+            if NOTES_BOOK.find_info_by_name(result):
+                return NOTES_BOOK.find_info_by_name(result)
             else:
                 return "Nothing match to result"
         elif result.lower() == "tag":
@@ -307,3 +310,10 @@ def main():
             print("Wrong command")
             continue
         print(COMMANDS[command]())
+
+
+if __name__ == "__main__":
+    if NOTEBOOK_SERIALIZATION_PATH.exists():
+        NOTES_BOOK.deserialize(NOTEBOOK_SERIALIZATION_PATH)
+    main()
+    NOTES_BOOK.serialize()
