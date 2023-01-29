@@ -198,11 +198,11 @@ def clean():
         get_and_rename_files_names(DIR_PATH)
         create_folders(DIR_PATH)
         remove_files(DIR_PATH)
-        deleted_folders(DIR_PATH)
         existed_archives = set([value.split(".")[1]
                                 for value in names_dict["archives"]])
         if existed_archives:
             unpack_archives(DIR_PATH)
+        deleted_folders(DIR_PATH)
         print(f"Folder {DIR_PATH} has been cleaned")
 
 

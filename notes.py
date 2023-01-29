@@ -1,3 +1,8 @@
+import classes
+
+NOTES_BOOK = classes.NoteBook()
+
+
 def hello():
     return "How can I help you?"
 
@@ -9,12 +14,12 @@ def add():
         name = input("What do you want to record?: ")
         if name.lower() == "cancel":
             return "Adding a new record has been canceled"
-        elif name == classes.Name(name):
+        elif name == classes.NoteName(name):
             while True:
                 answer = input(
                     "You have already such note, do you want to rewrite it? (y/n) ")
                 if answer.lower() == "y":
-                    name = classes.Name(name)
+                    name = classes.NoteName(name)
                     break
                 elif answer.lower() == "cancel":
                     return "Adding a new note has been canceled"
@@ -25,7 +30,7 @@ def add():
             else:
                 continue
         else:
-            name = classes.Name(name)
+            name = classes.NoteName(name)
             break
 
     note = input(f"Type {name.value}'s note: ")
