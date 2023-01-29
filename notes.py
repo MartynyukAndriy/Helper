@@ -64,7 +64,7 @@ def add():
         tag = classes.Tags(tag)
     record = classes.RecordNote(name, note, tag)
     NOTES_BOOK.add_note(record)
-    return f"Contact '{name.value}' has been saved"
+    return f"Note '{name.value}' has been saved"
 
 
 def search():
@@ -235,7 +235,7 @@ def dellate_note():
     command = input("Do you want to delete the note? (y/n) ")
     while True:
         if command.lower() == "y":
-            note = input("What note do you want to delete? ")
+            note = input("Which note do you want to delete? ")
             if note.lower() in NOTES_BOOK.data.keys():
                 NOTES_BOOK.data.pop(note)
                 return f"Note {note} has been deleted"
