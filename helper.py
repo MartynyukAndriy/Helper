@@ -1,5 +1,6 @@
 import bot
 import sort
+import notes
 from pathlib import Path
 
 if __name__ == "__main__":
@@ -12,7 +13,10 @@ if __name__ == "__main__":
             bot.main()
             bot.ADDRESS_BOOK.serialize()
         elif work_with.lower() == "notes":
-            pass
+            if notes.NOTEBOOK_SERIALIZATION_PATH.exists():
+                notes.NOTES_BOOK.deserialize(notes.NOTEBOOK_FILE_NAME)
+            notes.main()
+            notes.NOTES_BOOK.serialize()
         elif work_with.lower() == "files":
             sort.clean()
             sort.DIR_PATH = ""
@@ -21,3 +25,4 @@ if __name__ == "__main__":
             break
         else:
             print("Wrong command")
+
