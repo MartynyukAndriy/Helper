@@ -1,7 +1,7 @@
 from setuptools import setup, find_namespace_packages
 
 setup(
-    name='Helper_assistant_ua',
+    name='Helper_assistant_bot',
     version='0.0.1',
     description='Personal Assistant "Helper" with a command line interface',
     url='https://github.com/MartynyukAndriy/Helper',
