@@ -406,11 +406,41 @@ def show_all():
 
 
 def show():
-    pass
-    # n = input("How many records you want to see? ")
-    # try:
-
-    # next(ADDRESS_BOOK.iterator(int(n)))
+    while True:
+        n = input("How many records you want to see? ")
+        if n.isnumeric() and int(n) > 0 and int(n) <= len(ADDRESS_BOOK.show_records().values()):
+            n = int(n)
+            break
+        elif n.isnumeric() and int(n) > 0 and int(n) > len(ADDRESS_BOOK.show_records().values()):
+            n = len(ADDRESS_BOOK.show_records().values())
+            break
+        else:
+            print("You have to type a number > 0")
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+    for info in ADDRESS_BOOK.show_records().values():
+        name = info.name.value if len(
+            info.name.value) < 20 else name[:17]+'...'
+        if len(info.phones) == 1:
+            contacts = info.phones[0].value
+        elif len(info.phones) > 1:
+            contacts = [contact.value for contact in info.phones]
+            contacts = ", ".join(contacts)
+            contacts = contacts if len(
+                contacts) < 34 else contacts[:32]+"..."
+        else:
+            contacts = "None"
+        address = info.address.value if info.address.value else "None"
+        address = address if len(address) < 35 else address[:32]+"..."
+        email = info.email.value if info.email.value else "None"
+        email = email if len(email) < 35 else email[:32]+"..."
+        birthday = info.birthday.value if info.birthday.value else "None"
+        print(
+            f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+        counter += 1
+        if counter > n:
+            break
 
 
 def end_work():
@@ -468,7 +498,7 @@ def main():
         if command == "help":
             print(COMMANDS["help"]())
             continue
-        if command == "showall":
+        if command in ["show", "showall"]:
             COMMANDS[command]()
             continue
         if command == "birthdays":
