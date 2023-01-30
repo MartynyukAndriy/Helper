@@ -307,8 +307,8 @@ class NoteName:
 
 class Status:
 
-    def __init__(self, value="in progress"):
-        self.value = "in progress"
+    def __init__(self, value="In progress"):
+        self.value = "In progress"
 
     def __repr__(self):
         return f'{self.value}'
@@ -357,10 +357,10 @@ class NoteBook(UserDict):
     def add_note(self, record):
         self.data[record.name.value] = record
 
-    def change_name(self, name, new_name):
-        for k in self.data:
-            if k == name:
-                self.data[k].name = new_name
+    def change_name(self, old_name, new_name):
+        self.data[new_name] = copy.deepcopy(self.data[old_name])
+        self.data[new_name].name.value = new_name
+        self.data.pop(old_name)
 
     def change_tag(self, name, tags):
         new_tag = Tags(tags)
@@ -374,6 +374,10 @@ class NoteBook(UserDict):
         for k in self.data:
             if k == name:
                 self.data[k].note = new_note
+
+    def change_status(self, name, new_status):
+        if new_status in ["In progress", "Done"]:
+            self.data[name].status.value = new_status
 
     def show_record(self, name):
         if name in self.data.keys():
@@ -390,6 +394,13 @@ class NoteBook(UserDict):
                 deleted_note = a.note
                 self.data.pop(a)
                 return deleted_note
+
+    def dellete_notes_by_status(self, status):
+        result = {}
+        for name, record in self.data.items():
+            if record.status.value != status:
+                result[name] = record
+        self.data = result
 
     def delete_tag(self, name, del_tag):
         old_tags = self.data[name].tags

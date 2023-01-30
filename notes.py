@@ -10,21 +10,23 @@ NOTES_BOOK = classes.NoteBook()
 def hello():
     return "How can I help you?"
 
+
 def help():
-    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*90)
-    print(f"add:     Adds a note to the notebook.\n","-"*90) 
-    print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n","-"*90)   
-    print(f"change:  Changes the information in the note: name / note / tag / status.\n","-"*90)
-    print(f"show:    Show notes as much as the user specifies.\n","-"*90)
-    print(f"showall: Show all notes.\n","-"*90)
-    print(f"del:     Deleting a note, or deleting completed notes.\n","-"*90)
-    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*90)
-    print(f"good bye, close, exit: Exit the program.\n","-"*90)
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n", "-"*90)
+    print(f"add:     Adds a note to the notebook.\n", "-"*90)
+    print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n", "-"*90)
+    print(f"change:  Changes the information in the note: name / note / tag / status.\n", "-"*90)
+    print(f"show:    Show notes as much as the user specifies.\n", "-"*90)
+    print(f"showall: Show all notes.\n", "-"*90)
+    print(f"del:     Deleting a note, or deleting completed notes.\n", "-"*90)
+    print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*90)
+    print(f"good bye, close, exit: Exit the program.\n", "-"*90)
     command = input("Press any key to return. ")
     if command.lower() == "cancel":
-        return "Exit from the help menu. " 
+        return "Exit from the help menu. "
     else:
         main()
+
 
 def add():
     name = input("Type a theme to your record: ")
@@ -92,8 +94,8 @@ def search():
             result = input("What you want to find: ")
             if result == "cancel":
                 return "Searching has been canceled"
-            if NOTES_BOOK.find_info_by_status(result.lower()):
-                return NOTES_BOOK.find_info_by_status(result.lower())
+            if NOTES_BOOK.find_info_by_status(result):
+                return NOTES_BOOK.find_info_by_status(result)
             else:
                 return "Nothing match to result"
         elif result.lower() == "cancel":
@@ -173,7 +175,7 @@ def change():
                                     NOTES_BOOK.change_tag(
                                         name, old_tag, new_tag)
                                     return f"Tag {old_tag.value} has been changed to {new_tag.value}"
-                elif command == "dell":
+                elif command.lower() == "dell":
                     while True:
                         tag = input("Please type a tag you want to delete ")
                         if tag == "cancel":
@@ -202,29 +204,6 @@ def change():
                         return "Changing has been canceled"
                     else:
                         continue
-            elif command.lower() == "dell":
-                while True:
-                    old_tag = input(
-                        "Type tag you want to dellete: ")
-                    if old_tag.lower() == "cancel":
-                        return "Changing has been canceled"
-                    old_tag = classes.Tag(old_tag)
-                    tag_list = [
-                        tag.value for tag in NOTES_BOOK.get_tags(name)]
-                    if old_tag.value in tag_list:
-                        NOTES_BOOK.dell_tag(name, old_tag)
-                        return f"Tag {old_tag.value} has been dellated."
-                    else:
-                        answer = input(
-                            "Tag is incorrect, would you like to try one more time? (y/n): ")
-                        if answer.lower() == "n":
-                            break
-                        elif answer.lower() == "y":
-                            continue
-                        elif answer.lower() == "cancel":
-                            return "Changing has been canceled"
-                        else:
-                            continue
             elif item.lower() == "status":
                 while True:
                     new_status = input(
@@ -247,11 +226,11 @@ def change():
 
 
 def dellate_note():
-    command = input("Do you want to delete the note? (y/n) ")
+    command = input("Do you want to delete one note? (y/n) ")
     while True:
         if command.lower() == "y":
             note = input("Which note do you want to delete? ")
-            if note.lower() in NOTES_BOOK.data.keys():
+            if note in NOTES_BOOK.data.keys():
                 NOTES_BOOK.data.pop(note)
                 return f"Note {note} has been deleted"
             else:
@@ -268,10 +247,10 @@ def dellate_note():
             while True:
                 answer = input(
                     "Do you want to delete all completed notes? (y/n) ")
-                if answer.lower() in ["n", "cancel"]:
+                if answer.lower() in ["cancel"]:
                     return "You have canceled deleting"
                 if answer.lower() == "y":
-                    NOTES_BOOK.dellete_notes()
+                    NOTES_BOOK.dellete_notes_by_status("Done")
                     return f"Notes with status Done has been deleted"
                 elif command.lower() == "cancel":
                     return "You have canceled deleting"
@@ -328,7 +307,8 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input("If you need help, write 'help'\nWrite command >> ")
+        user_command = input(
+            "If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
