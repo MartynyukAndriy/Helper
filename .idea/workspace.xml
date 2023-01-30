@@ -4,10 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2742970a-0270-474d-a347-efb36690e8c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Setup.py" afterDir="false" />
+    <list default="true" id="2742970a-0270-474d-a347-efb36690e8c1" name="Changes" comment="Merge branch 'dev' of https://github.com/MartynyukAndriy/Helper into dev&#10;&#10;# Conflicts:&#10;#&#9;README.md&#10;#&#9;classes.py">
+      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notebook.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addressbook.bin" beforeDir="false" afterPath="$PROJECT_DIR$/addressbook.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sort.py" beforeDir="false" afterPath="$PROJECT_DIR$/sort.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
