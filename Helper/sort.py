@@ -4,7 +4,7 @@ import os
 import shutil
 import zipfile
 import tarfile
-from clean_folder.translate import normalize
+from Helper.translate import normalize
 
 
 DIR_PATH = ""
@@ -30,6 +30,7 @@ def get_folder_name():
             DIR_PATH = input(
                 "Please type a path to the folder you want to clean: ")
             if DIR_PATH in ["cancel", "close", "exit"]:
+                DIR_PATH = ""
                 return print("Work with files have been canceled")
             path = Path(DIR_PATH)
             if not path.exists():
@@ -44,6 +45,8 @@ def get_folder_name():
                     else:
                         print("Wrong command")
                         continue
+            else:
+                return print(f"Cleaning {DIR_PATH} folder")
 
 
 names_dict = {"images": [],
@@ -103,6 +106,7 @@ def remove_files(path):
     """
     This function remove files to correct directory
     """
+    steps = 0
     remove_files_info_logs = []
     counter = 0
     obj_path = Path(path)
@@ -194,11 +198,12 @@ def clean():
         get_and_rename_files_names(DIR_PATH)
         create_folders(DIR_PATH)
         remove_files(DIR_PATH)
-        deleted_folders(DIR_PATH)
         existed_archives = set([value.split(".")[1]
                                 for value in names_dict["archives"]])
         if existed_archives:
             unpack_archives(DIR_PATH)
+        deleted_folders(DIR_PATH)
+        print(f"Folder {DIR_PATH} has been cleaned")
 
 
 if __name__ == "__main__":
