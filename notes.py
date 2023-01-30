@@ -10,6 +10,21 @@ NOTES_BOOK = classes.NoteBook()
 def hello():
     return "How can I help you?"
 
+def help():
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*90)
+    print(f"add:     Adds a note to the notebook.\n","-"*90) 
+    print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n","-"*90)   
+    print(f"change:  Changes the information in the note: name / note / tag / status.\n","-"*90)
+    print(f"show:    Show notes as much as the user specifies.\n","-"*90)
+    print(f"showall: Show all notes.\n","-"*90)
+    print(f"del:     Deleting a note, or deleting completed notes.\n","-"*90)
+    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*90)
+    print(f"good bye, close, exit: Exit the program.\n","-"*90)
+    command = input("Press any key to return. ")
+    if command.lower() == "cancel":
+        return "Exit from the help menu. " 
+    else:
+        main()
 
 def add():
     name = input("Type a theme to your record: ")
@@ -51,7 +66,7 @@ def add():
         tag = classes.Tags(tag)
     record = classes.RecordNote(name, note, tag)
     NOTES_BOOK.add_note(record)
-    return f"Contact '{name.value}' has been saved"
+    return f"Note '{name.value}' has been saved"
 
 
 def search():
@@ -235,7 +250,7 @@ def dellate_note():
     command = input("Do you want to delete the note? (y/n) ")
     while True:
         if command.lower() == "y":
-            note = input("What note do you want to delete? ")
+            note = input("Which note do you want to delete? ")
             if note.lower() in NOTES_BOOK.data.keys():
                 NOTES_BOOK.data.pop(note)
                 return f"Note {note} has been deleted"
@@ -281,6 +296,7 @@ def end_work():
 
 
 COMMANDS = {"hello": hello,
+            "help": help,
             "add": add,
             "search": search,
             "change": change,
@@ -294,6 +310,8 @@ def parser(command):
         return "hello"
     if command.lower() in ["good bye", "close", "exit"]:
         return "end_work"
+    if command.lower() == "help":
+        return "help"
     if command.split()[0].lower() == "add":
         return "add"
     if command.split()[0].lower() == "search":
@@ -310,13 +328,16 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input(">> ")
+        user_command = input("If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
             break
         if command == "hello":
             print(COMMANDS["hello"]())
+            continue
+        if command == "help":
+            print(COMMANDS["help"]())
             continue
         if command == "show":
             print(COMMANDS["show"]())

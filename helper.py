@@ -14,7 +14,7 @@ if __name__ == "__main__":
             bot.ADDRESS_BOOK.serialize()
         elif work_with.lower() == "notes":
             if notes.NOTEBOOK_SERIALIZATION_PATH.exists():
-                notes.NOTES_BOOK.deserialize(notes.NOTEBOOK_SERIALIZATION_PATH)
+                notes.NOTES_BOOK.deserialize(notes.NOTEBOOK_FILE_NAME)
             notes.main()
             notes.NOTES_BOOK.serialize()
         elif work_with.lower() == "files":
