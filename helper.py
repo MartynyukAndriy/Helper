@@ -3,7 +3,8 @@ import sort
 import notes
 from pathlib import Path
 
-if __name__ == "__main__":
+
+def main():
     while True:
         work_with = input(
             "With what part of helper you want to work? (contacts / notes / files) ")
@@ -25,3 +26,7 @@ if __name__ == "__main__":
             break
         else:
             print("Wrong command")
+
+
+if __name__ == "__main__":
+    main()
