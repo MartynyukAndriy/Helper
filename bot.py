@@ -17,21 +17,22 @@ def hello():
 
 
 def help():
-    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*115)
-    print(f"add:     Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n","-"*115)
-    print(f"search:  Searches for contacts in the address book by the following fields: name / phone.\n","-"*115)
-    print(f"change:  Changes the information in the contact: name / phone / address / email / birthday.\n","-"*115)
-    print(f"show:    Show contacts as much as the user specifies.\n","-"*115)
-    print(f"showall: Show all notes.\n","-"*115)
-    print(f"del:     Deleting a contact, or deleting phone / address / email / birthday in contact.\n","-"*115)
-    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*115)
-    print(f"birthdays: Shows the number of days until someone's birthday.\n","-"*115)
-    print(f"good bye, close, exit: Exit the program.\n","-"*115)
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n", "-"*115)
+    print(f"add:     Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n", "-"*115)
+    print(f"search:  Searches for contacts in the address book by the following fields: name / phone.\n", "-"*115)
+    print(f"change:  Changes the information in the contact: name / phone / address / email / birthday.\n", "-"*115)
+    print(f"show:    Show contacts as much as the user specifies.\n", "-"*115)
+    print(f"showall: Show all notes.\n", "-"*115)
+    print(f"del:     Deleting a contact, or deleting phone / address / email / birthday in contact.\n", "-"*115)
+    print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*115)
+    print(f"birthdays: Shows the number of days until someone's birthday.\n", "-"*115)
+    print(f"good bye, close, exit: Exit the program.\n", "-"*115)
     command = input("Press any key to return. ")
     if command.lower() == "cancel":
-        return "Exit from the help menu. " 
+        return "Exit from the help menu. "
     else:
         main()
+
 
 def add():
     while True:
@@ -72,7 +73,8 @@ def add():
             return "Adding a new contact has been canceled"
         elif answer.lower() == "y":
             phone = classes.Phone(input(f"Type {name.value}'s phone number: "))
-            break
+            if phone.value:
+                break
         else:
             print("Please choose correct answer")
     address = input(f"Type {name.value}'s address: ")
@@ -94,7 +96,8 @@ def add():
             return "Adding a new contact has been canceled"
         elif answer.lower() == "y":
             email = classes.Email(input(f"Type {name.value}'s email: "))
-            break
+            if email.value:
+                break
         else:
             print("Please choose correct answer")
     birthday = input(f"Type {name.value}'s birthday: ")
@@ -112,7 +115,8 @@ def add():
         elif answer.lower() == "y":
             birthday = classes.Birthday(
                 input(f"Type {name.value}'s birthday: "))
-            break
+            if birthday.value:
+                break
         else:
             print("Please choose correct answer")
     record = classes.Record(name, phone, address, email, birthday)
@@ -195,8 +199,8 @@ def change():
                     while True:
                         old_phones = ADDRESS_BOOK.get_phones(contact)
                         ADDRESS_BOOK.clear_phones(contact)
-                        new_phone = classes.Phone(
-                            input(f"Type a new phone for contact {contact}: "))
+                        new_phone = input(
+                            f"Type a new phone for contact {contact}: ")
                         if new_phone.lower() == "cancel":
                             return "Changing has been canceled"
                         else:
@@ -452,7 +456,8 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input("If you need help, write 'help'\nWrite command >> ")
+        user_command = input(
+            "If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
