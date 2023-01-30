@@ -325,7 +325,8 @@ class Tags:
 
 
 class RecordNote:
-    def __init__(self, note: Notes, tag: Tags = None):
+    def __init__(self, name: Name, note: Notes, tag: Tags = None):
+        self.name = name
         self.note = note
         self.tags = []
         if tag:

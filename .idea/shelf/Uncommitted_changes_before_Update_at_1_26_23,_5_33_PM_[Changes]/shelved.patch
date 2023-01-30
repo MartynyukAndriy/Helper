@@ -1,0 +1,87 @@
+Index: classes.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from collections import UserDict\nfrom datetime import date, datetime\nimport pickle\nfrom pathlib import Path\nimport re\nimport copy\n\n\nFILE_NAME = \"addressbook.bin\"\nSERIALIZATION_PATH = Path(FILE_NAME)\n\n\nclass AddressBook(UserDict):\n    \"\"\"Creating user's addressbooks\"\"\"\n\n    def add_record(self, record):\n        self.data[record.name.value] = record\n\n    def remove_record(self, record):\n        self.data.pop(record, None)\n\n    def change_name(self, old_name, new_name):\n        self.data[new_name] = copy.deepcopy(self.data[old_name])\n        self.data[new_name].name.value = new_name\n        self.remove_record(old_name)\n\n    def change_address(self, record, new_address):\n        self.data[record].address.value = new_address\n\n    def change_email(self, record, new_email):\n        self.data[record].email.value = new_email\n\n    def change_birthday(self, record, new_birthday):\n        self.data[record].birthday.value = new_birthday\n\n    def edit_phone(self, record, new_phone):\n        self.data[record].add_phone(new_phone)\n\n    def clear_phones(self, record):\n        self.data[record].phones = []\n\n    def get_phones(self, record):\n        return self.data[record].phones\n\n    def set_phones(self, record, phone_list):\n        self.data[record].phones = phone_list\n\n    def show_records(self):\n        return self.data\n\n    def show_record(self, contact):\n        try:\n            return self.data[contact]\n        except:\n            return None\n\n    def iterator(self, n=1):\n        records = list(self.data.keys())\n        records_num = len(records)\n        if n > records_num:\n            n = records_num\n        for i in range(0, records_num, n):\n            yield [self.data[records[i+j]].show_contact() for j in range(n) if i + j < records_num]\n\n    def serialize(self, file_name=\"addressbook.bin\"):\n        with open(file_name, \"wb\") as file:\n            pickle.dump(self.data, file)\n\n    def deserialize(self, file_name=\"addressbook.bin\"):\n        with open(file_name, \"rb\") as file:\n            self.data = pickle.load(file)\n\n    def find_info_by_name(self, name):\n        users_search = []\n        for user, info in self.data.items():\n            if name.lower() in info.name.value.lower():\n                users_search.append(self.data[user])\n        if users_search:\n            return users_search\n        else:\n            return \"Nothing found\"\n\n    def find_info_by_phone(self, search_phone):\n        users_search = []\n        for user, info in self.data.items():\n            if info.phones and info.phones[0].value != None:\n                for phone in info.phones:\n                    if str(search_phone) in phone.value:\n                        users_search.append(self.data[user])\n        if users_search:\n            return users_search\n        else:\n            return \"Nothing found\"\n\n    def show_contacts_by_birthday(self, days):\n        result = [self.data[record] for record in self.data if self.data[record].birthday and self.data[record].days_to_birthday()\n                  <= days]\n        return result\n\n\nclass Record:\n    \"\"\"Creating user's contacts\"\"\"\n\n    def __init__(self, name, phone=None, address=None, email=None, birthday=None):\n        self.name = name\n        self.phones = []\n        if phone and phone.value != None:\n            self.add_phone(phone)\n        self.address = address\n        self.email = email\n        if isinstance(birthday, Birthday):\n            self.birthday = birthday\n        else:\n            self.birthday = None\n\n    def __str__(self):\n        return f\"Name: {self.name.value} Phone: {self.phones} Address: {self.address.value} Email: {self.email.value} Birthday: {self.birthday}\"\n\n    def __repr__(self):\n        return f\"Name: {self.name.value} Phone: {self.phones} Address: {self.address.value} Email: {self.email.value} Birthday: {self.birthday}\"\n\n    def add_phone(self, phone):\n        self.phones.append(phone)\n\n    def add_birthday(self, birthday):\n        if isinstance(birthday, Birthday):\n            self.birthday = birthday\n        else:\n            self.birthday = Birthday(birthday)\n\n    def change_phone(self, phone):\n        self.phones = phone\n\n    def delete_phone(self):\n        self.phones = []\n\n    def show_contact(self):\n        return {\"name\": self.name.value,\n                \"phone\": [phone.value for phone in self.phones] if self.phones else [],\n                \"birthday\": self.birthday.value if self.birthday else self.birthday}\n\n    def days_to_birthday(self):\n        birthday = datetime(year=int(datetime.now().year),\n                            month=int(self.birthday.value[3:5]), day=int(self.birthday.value[:2])).date()\n        time_now = datetime.now().date()\n        delta = birthday - time_now\n        if int(delta.days) >= 0:\n            return delta.days\n        else:\n            birthday = datetime(year=int(datetime.now().year)+1,\n                                month=int(self.birthday.value[3:5]), day=int(self.birthday.value[:2])).date()\n            delta = birthday - time_now\n            return delta.days\n\n\nclass Field:\n\n    def __init__(self, value) -> None:\n        self.__value = None\n        self.value = value\n\n    @property\n    def value(self):\n        return self.__value\n\n    @value.setter\n    def value(self, value):\n        self.__value = value\n\n\nclass Address(Field):\n    pass\n\n\nclass Email(Field):\n    def __init__(self, email):\n        self.__value = None\n        self.value = email\n\n    def __str__(self):\n        return str(self.__value)\n\n    def __repr__(self):\n        return str(self.__value)\n\n    def check_email(self, email):\n        result = re.match(\n            r\"[a-zA-Z]{1}[a-zA-Z0-9._]+@{1}\\w+\\.{1}[a-zA-Z]{2,3}\", email)\n        if result:\n            return email\n        else:\n            return None\n\n    @property\n    def value(self):\n        return self.__value\n\n    @value.setter\n    def value(self, new_email):\n        if new_email == None:\n            self.__value = None\n        elif self.check_email(new_email):\n            self.__value = self.check_email(new_email)\n\n\nclass Name(Field):\n    pass\n\n\nclass Phone(Field):\n\n    def __init__(self, phone):\n        self.__value = None\n        self.value = phone\n\n    def __str__(self):\n        return str(self.__value)\n\n    def __repr__(self):\n        return str(self.__value)\n\n    def check_phone(self, phone):\n        new_phone = str(phone).strip().replace(\"+\", \"\").replace(\n            \"(\", \"\").replace(\")\", \"\").replace(\"-\", \"\").replace(\" \", \"\")\n        try:\n            new_phone = [str(int(i)) for i in new_phone]\n        except ValueError:\n            print(\"Phone number is incorrect!\")\n\n        else:\n            new_phone = \"\".join(new_phone)\n            if len(new_phone) == 12:\n                return f\"+{new_phone[0:2]}({new_phone[2:5]}){new_phone[5:7]}-{new_phone[7:9]}-{new_phone[9:]}\"\n            elif len(new_phone) == 10:\n                return f\"+38({new_phone[0:3]}){new_phone[3:6]}-{new_phone[6:8]}-{new_phone[8:]}\"\n            else:\n                print(\"Length of phone's number is wrong\")\n                return None\n\n    @property\n    def value(self):\n        return self.__value\n\n    @value.setter\n    def value(self, new_phone):\n        if self.check_phone(new_phone):\n            self.__value = self.check_phone(new_phone)\n\n\nclass Birthday(Field):\n\n    def __init__(self, birthday):\n        self.__value = None\n        self.value = birthday\n\n    def __str__(self):\n        return str(self.__value)\n\n    def __repr__(self):\n        return str(self.__value)\n\n    @property\n    def value(self):\n        return self.__value\n\n    @value.setter\n    def value(self, new_birthday):\n        if new_birthday == None:\n            self.__value = None\n        elif self.check_birthday(new_birthday):\n            self.__value = self.check_birthday(new_birthday)\n\n    def check_birthday(self, birthday):\n        try:\n            year = int(birthday[6:])\n            month = int(birthday[3:5])\n            day = int(birthday[:2])\n            test_date = date(year, month, day)\n            delta = datetime.now().date() - test_date\n            if len(str(year)) < 4:\n                raise ValueError\n            if delta.days < 0:\n                raise TypeError\n        except TypeError:\n            print(\"No one can be born in the future :)\")\n        except ValueError:\n            print(\"Wrong date, should be - dd.mm.yyyy, only numbers\")\n        else:\n            return birthday\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/classes.py b/classes.py
+--- a/classes.py	(revision 999ae66c715f40125743f8f6e48162d910832001)
++++ b/classes.py	(date 1674746888812)
+@@ -4,6 +4,7 @@
+ from pathlib import Path
+ import re
+ import copy
++import os
+ 
+ 
+ FILE_NAME = "addressbook.bin"
+@@ -287,3 +288,68 @@
+             print("Wrong date, should be - dd.mm.yyyy, only numbers")
+         else:
+             return birthday
++
++class Notes:
++    def __init__(self, value):
++        self.value = value
++    def __repr__(self):
++        return f'{self.value}'
++
++class Tags:
++    def __init__(self, value):
++        self.value = value
++    def __repr__(self):
++        return f'{self.value}'
++
++class RecordNote:
++    def __init__(self, note: Notes, tag: Tags = None):
++        self.note = note
++        self.tags = []
++        if tag:
++            self.tags.append(tag)
++
++    def __repr__(self):
++        if len(self.tags) > 0:
++            return f'Tags: {[i.value for i in self.tags]}\n{self.note.value}'
++        return f'{self.note.value}'
++
++    def add_tag(self):
++        while True:
++            tag_input = input('Please, add tag:')
++            my_tag = Tags(tag_input)
++            if tag_input == "":
++                break
++            if my_tag.value not in [i.value for i in self.tags]:
++                self.tags.append(my_tag)
++
++
++class Notebook(UserDict):
++    def __init__(self):
++        self.data = {}
++
++    def __repr__(self):
++        return f'{self.data}'
++
++    def add_note(self, note: Note):
++        my_note = Notes(note)
++        rec = RecordNote(my_note)
++        self.data[rec.note.value] = rec
++        return rec.add_tag()
++
++    def find_by_keyword(self, keyword):
++        res = {
++            keyword: []
++        }
++        for tag, notes in self.data.items():
++            if keyword in tag.split(', '):
++                if notes not in res[keyword]:
++                    res[keyword].append(notes)
++        return res
++
++    def load_file(self):
++        if os.path.isfile('addressbook.bin'):
++            with open('addressbook.bin', 'rb') as file:
++                addressbook = pickle.load(file)
++
++        with open('addressbook.bin', 'wb') as file:
++            pickle.dump(addressbook, file)
