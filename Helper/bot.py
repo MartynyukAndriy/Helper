@@ -486,8 +486,8 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input(
-            "If you need help, write 'help'\nWrite command >> ")
+        print("Hello. If you need help, write 'help'")
+        user_command = input(">>> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())

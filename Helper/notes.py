@@ -16,8 +16,8 @@ def help():
     print(f"add:     Adds a note to the notebook.\n", "-"*90)
     print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n", "-"*90)
     print(f"change:  Changes the information in the note: name / note / tag / status.\n", "-"*90)
-    print(f"show:    Show notes as much as the user specifies.\n", "-"*90)
-    print(f"showall: Show all notes.\n", "-"*90)
+    print(f"shownote:Show notes as much as the user specifies.\n", "-"*90)
+    print(f"show:    Show all notes.\n", "-"*90)
     print(f"del:     Deleting a note, or deleting completed notes.\n", "-"*90)
     print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*90)
     print(f"good bye, close, exit: Exit the program.\n", "-"*90)
@@ -266,9 +266,40 @@ def dellate_note():
                             print("Wrong command")
 
 
-def show_all():
-    return NOTES_BOOK.show_records()
 
+def show_note():
+    name = input("Which note do you want to see? ")
+    if name.lower() == "cancel":
+        return "Showing has been canceled"
+    if NOTES_BOOK.show_record(name):
+        return NOTES_BOOK.show_record(name)
+            
+
+def show_all():
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^25} | {'Note':^80} | {'Tags':^15} | {'Status':^15} |")
+    for info in NOTES_BOOK.show_records().values():
+        # name = info.name.value 
+        if len(info.name.value) > 20: 
+            name[:22]+'...'     
+        else:
+            name = info.name.value
+        # tags = info.tags.value if len(info.tags.value) < 10 else tags[:12]+'...'
+        if len(info.tags) == 1:
+            tags = info.tags[0].value
+        elif len(info.tags) > 1:
+            for tag in info.tags.value:
+                tags_l = []
+                tags_l.append(tag)
+                tags = ", ".join(tags_l)
+        tags = tags if len(tags) < 10 else tags[:12]+"..."
+        note = info.note.value
+        note = note if len(note) < 70 else note[:77]+"..."
+        status = info.status.value
+        print(
+            f"{counter:<2} | {name:<25} | {note:<80} | {tags:<15} | {status:<15} |\n","-"*150)
+        counter += 1
 
 def end_work():
     return "Good bye"
@@ -280,6 +311,7 @@ COMMANDS = {"hello": hello,
             "search": search,
             "change": change,
             "show": show_all,
+            "shownote": show_note,
             "del": dellate_note,
             "end_work": end_work}
 
@@ -299,6 +331,8 @@ def parser(command):
         return "change"
     if command.split()[0].lower() == "show":
         return "show"
+    if command.split()[0].lower() == "shownote":
+        return "shownote"
     if command.split()[0].lower() == "del":
         return "del"
     else:
@@ -306,9 +340,9 @@ def parser(command):
 
 
 def main():
+    print("Hello. If you need help, write 'help'")
     while True:
-        user_command = input(
-            "If you need help, write 'help'\nWrite command >> ")
+        user_command = input(">>> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
@@ -318,6 +352,9 @@ def main():
             continue
         if command == "help":
             print(COMMANDS["help"]())
+            continue
+        if command == "shownote":
+            print(COMMANDS["shownote"]())
             continue
         if command == "show":
             print(COMMANDS["show"]())
