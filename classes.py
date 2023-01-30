@@ -292,13 +292,15 @@ class Birthday(Field):
         else:
             return birthday
 
-class Name:
+
+class NoteName:
 
     def __init__(self, value):
         self.value = value
 
     def __repr__(self):
         return f'{self.value}'
+
 
 class Status:
 
@@ -307,6 +309,7 @@ class Status:
 
     def __repr__(self):
         return f'{self.value}'
+
 
 class Notes:
     def __init__(self, value):
@@ -325,18 +328,19 @@ class Tags:
 
 
 class RecordNote:
-    def __init__(self, name: Name, note: Notes, tag: Tags = None):
+    def __init__(self, name, note: Notes, tag: Tags = None, status="in progress"):
         self.name = name
         self.note = note
         self.tags = []
         if tag:
             self.tags.append(tag)
+        self.status = Status(status)
+
+    def __str__(self):
+        return f"Name: {self.name.value} Note: {self.note} Tags: {self.tags} Status: {self.status.value}"
 
     def __repr__(self):
-        if len(self.tags) > 0:
-            return f'Tags: {[i.value for i in self.tags]}\n{self.note.value}'
-        return f'{self.note.value}'
-
+        return f"Name: {self.name.value} Note: {self.note} Tags: {self.tags} Status: {self.status.value}"
 
 
 class NoteBook(UserDict):
@@ -346,11 +350,31 @@ class NoteBook(UserDict):
     def __repr__(self):
         return f'{self.data}'
 
-    def add_note(self, note: Notes):
-        my_note = Notes(note)
-        rec = RecordNote(my_note)
-        self.data[rec.note.value] = rec
-        return rec.add_tag()
+    def add_note(self, record):
+        self.data[record.name.value] = record
+
+    def change_name(self, name, new_name):
+        for k in self.data:
+            if k == name:
+                self.data[k].name = new_name
+
+    def change_tag(self, name, tags):
+        new_tag = Tags(tags)
+        for k, v in self.data.items():
+            if k == name:
+                self.data[k].tags = []
+                self.data[k].tags.append(new_tag)
+
+    def change_note(self, name, new_note):
+        new_note = Notes(new_note)
+        for k in self.data:
+            if k == name:
+                self.data[k].note = new_note
+
+    def show_note(self, name):
+        for k in self.data:
+            if k == name:
+                return self.data[k]
 
     def delete_note(self, rec: RecordNote):
         for a, v in self.data.items():
@@ -358,24 +382,16 @@ class NoteBook(UserDict):
                 deleted_note = a.note
                 self.data.pop(a)
                 return deleted_note
-    def add_tage(self):
-        while True:
-            tag_input = input('Please, add tag: ')
-            my_tag = Tags(tag_input)
-            if tag_input == "":
-                break
-            if my_tag.value not in [i.value for i in self.tags]:
-                self.tags.append(my_tag)
 
-    def search(self, keyword):
-        res = {
-            keyword: []
-        }
-        for tag, notes in self.data.items():
-            if keyword in tag.split(', '):
-                if notes not in res[keyword]:
-                    res[keyword].append(notes)
-        return res
+    def add_tag(self, new_tag):
+        my_tag = Tags(new_tag)
+        if my_tag.value not in [i.value for i in self.tags]:
+            self.tags.append(my_tag)
+
+    def find_info_by_name(self, keyword):
+        for name, record in self.data.items():
+            if keyword == "name":
+                return self.data[keyword]
 
     def get_tags(self):
         tags_list = []
@@ -386,10 +402,13 @@ class NoteBook(UserDict):
             tags_set = sorted(set(tags_list), reverse=False)
             return tags_set
 
-    def load_file(self):
-        if os.path.isfile('notebook.bin'):
-            with open('notebook.bin', 'rb') as file:
-                notebook = pickle.load(file)
+    def serialize(self, file_name="notebook.bin"):
+        with open(file_name, 'wb') as file:
+            pickle.dump(self.data, file)
 
-        with open('notebook.bin', 'wb') as file:
-            pickle.dump(notebook, file)
+    def deserialize(self, file_name="notebook.bin"):
+        with open(file_name, 'rb') as file:
+            self.data = pickle.load(file)
+
+    def show_records(self):
+        return self.data

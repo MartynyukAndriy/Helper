@@ -16,6 +16,23 @@ def hello():
     return "How can I help you?"
 
 
+def help():
+    print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n","-"*115)
+    print(f"add:     Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n","-"*115)
+    print(f"search:  Searches for contacts in the address book by the following fields: name / phone.\n","-"*115)
+    print(f"change:  Changes the information in the contact: name / phone / address / email / birthday.\n","-"*115)
+    print(f"show:    Show contacts as much as the user specifies.\n","-"*115)
+    print(f"showall: Show all notes.\n","-"*115)
+    print(f"del:     Deleting a contact, or deleting phone / address / email / birthday in contact.\n","-"*115)
+    print(f"cancel:  An undo command anywhere in the assistant.\n","-"*115)
+    print(f"birthdays: Shows the number of days until someone's birthday.\n","-"*115)
+    print(f"good bye, close, exit: Exit the program.\n","-"*115)
+    command = input("Press any key to return. ")
+    if command.lower() == "cancel":
+        return "Exit from the help menu. " 
+    else:
+        main()
+
 def add():
     while True:
         name = input("Type a contact name: ")
@@ -32,6 +49,8 @@ def add():
                     return "Adding a new contact has been canceled"
                 elif answer.lower() == "n":
                     break
+                else:
+                    print("Wrong command")
             if answer.lower() == "y":
                 break
             else:
@@ -53,6 +72,7 @@ def add():
             return "Adding a new contact has been canceled"
         elif answer.lower() == "y":
             phone = classes.Phone(input(f"Type {name.value}'s phone number: "))
+            break
         else:
             print("Please choose correct answer")
     address = input(f"Type {name.value}'s address: ")
@@ -74,6 +94,7 @@ def add():
             return "Adding a new contact has been canceled"
         elif answer.lower() == "y":
             email = classes.Email(input(f"Type {name.value}'s email: "))
+            break
         else:
             print("Please choose correct answer")
     birthday = input(f"Type {name.value}'s birthday: ")
@@ -91,6 +112,7 @@ def add():
         elif answer.lower() == "y":
             birthday = classes.Birthday(
                 input(f"Type {name.value}'s birthday: "))
+            break
         else:
             print("Please choose correct answer")
     record = classes.Record(name, phone, address, email, birthday)
@@ -99,11 +121,14 @@ def add():
 
 
 def birthdays():
-    days = int(input("How many days? "))
-    if ADDRESS_BOOK.show_contacts_by_birthday(days):
-        return ADDRESS_BOOK.show_contacts_by_birthday(days)
+    days = input("How many days? ")
+    if days.isnumeric():
+        if ADDRESS_BOOK.get_contacts_by_birthday(int(days)):
+            ADDRESS_BOOK.show_contacts_by_birthday(int(days))
+        else:
+            print(f"Nothing is match")
     else:
-        return f"Nothing is match"
+        print("Days has to be a positive number")
 
 
 def search():
@@ -111,10 +136,18 @@ def search():
         result = input("Choose what you want to find (name / phone): ")
         if result.lower() == "name":
             result = input("What you want to find: ")
-            return ADDRESS_BOOK.find_info_by_name(result)
+            if ADDRESS_BOOK.find_info_by_name(result):
+                ADDRESS_BOOK.show_contacts_by_name(
+                    ADDRESS_BOOK.find_info_by_name(result))
+            else:
+                print("Nothing match with {result}")
         elif result.lower() == "phone":
             result = input("What you want to find: ")
-            return ADDRESS_BOOK.find_info_by_phone(result)
+            if ADDRESS_BOOK.find_info_by_phone(result):
+                ADDRESS_BOOK.show_contacts_by_phone(
+                    ADDRESS_BOOK.find_info_by_phone(result))
+            else:
+                print("Nothing match with {result}")
         elif result.lower() == "cancel":
             return "Serching has been canceled"
         else:
@@ -343,7 +376,37 @@ def del_record():
 
 
 def show_all():
-    return ADDRESS_BOOK.show_records()
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+    for info in ADDRESS_BOOK.show_records().values():
+        name = info.name.value if len(
+            info.name.value) < 20 else name[:17]+'...'
+        if len(info.phones) == 1:
+            contacts = info.phones[0].value
+        elif len(info.phones) > 1:
+            contacts = [contact.value for contact in info.phones]
+            contacts = ", ".join(contacts)
+            contacts = contacts if len(
+                contacts) < 34 else contacts[:32]+"..."
+        else:
+            contacts = "None"
+        address = info.address.value if info.address.value else "None"
+        address = address if len(address) < 35 else address[:32]+"..."
+        email = info.email.value if info.email.value else "None"
+        email = email if len(email) < 35 else email[:32]+"..."
+        birthday = info.birthday.value if info.birthday.value else "None"
+        print(
+            f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+        counter += 1
+
+
+def show():
+    pass
+    # n = input("How many records you want to see? ")
+    # try:
+
+    # next(ADDRESS_BOOK.iterator(int(n)))
 
 
 def end_work():
@@ -351,11 +414,13 @@ def end_work():
 
 
 COMMANDS = {"hello": hello,
+            "help": help,
             "add": add,
             "birthdays": birthdays,
             "search": search,
             "change": change,
-            "show": show_all,
+            "showall": show_all,
+            "show": show,
             "del": del_record,
             "end_work": end_work}
 
@@ -365,12 +430,16 @@ def parser(command):
         return "hello"
     if command.lower() in ["good bye", "close", "exit"]:
         return "end_work"
+    if command.lower() == "help":
+        return "help"
     if command.split()[0].lower() == "add":
         return "add"
     if command.split()[0].lower() == "search":
         return "search"
     if command.split()[0].lower() == "change":
         return "change"
+    if command.split()[0].lower() == "showall":
+        return "showall"
     if command.split()[0].lower() == "show":
         return "show"
     if command.split()[0].lower() == "birthdays":
@@ -383,7 +452,7 @@ def parser(command):
 
 def main():
     while True:
-        user_command = input(">> ")
+        user_command = input("If you need help, write 'help'\nWrite command >> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
@@ -391,30 +460,14 @@ def main():
         if command == "hello":
             print(COMMANDS["hello"]())
             continue
-        if command == "show":
-            counter = 1
-            print(
-                f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
-            for info in COMMANDS["show"]().values():
-                name = info.name.value if len(
-                    info.name.value) < 20 else name[:17]+'...'
-                if len(info.phones) == 1:
-                    contacts = info.phones[0].value
-                elif len(info.phones) > 1:
-                    contacts = [contact.value for contact in info.phones]
-                    contacts = ", ".join(contacts)
-                    contacts = contacts if len(
-                        contacts) < 34 else contacts[:32]+"..."
-                else:
-                    contacts = "None"
-                address = info.address.value if info.address.value else "None"
-                address = address if len(address) < 35 else address[:32]+"..."
-                email = info.email.value if info.email.value else "None"
-                email = email if len(email) < 35 else email[:32]+"..."
-                birthday = info.birthday.value if info.birthday.value else "None"
-                print(
-                    f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
-                counter += 1
+        if command == "help":
+            print(COMMANDS["help"]())
+            continue
+        if command == "showall":
+            COMMANDS[command]()
+            continue
+        if command == "birthdays":
+            COMMANDS[command]()
             continue
         if command == "wrong_command":
             print("Wrong command")
