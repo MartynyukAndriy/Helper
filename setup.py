@@ -10,5 +10,5 @@ setup(
     license='MIT',
     include_package_data=True,
     packages=find_namespace_packages(),
-    entry_points={'console_scripts': ['helper = helper.helper:main']}
+    entry_points={'console_scripts': ['helper = Helper.helper:main']}
 )
