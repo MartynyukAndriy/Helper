@@ -296,7 +296,10 @@ class Birthday(Field):
 class NoteName:
 
     def __init__(self, value):
-        self.value = value
+        if len(value) < 30:
+            self.value = value
+        else:
+            self.value = value[:30]
 
     def __repr__(self):
         return f'{self.value}'
@@ -304,19 +307,20 @@ class NoteName:
 
 class Status:
 
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, value="in progress"):
+        self.value = "in progress"
 
     def __repr__(self):
         return f'{self.value}'
 
 
 class Notes:
-    def __init__(self, value):
-        self.value = value
 
-    def __repr__(self):
-        return f'{self.value}'
+    def __init__(self, value):
+        if len(value) < 250:
+            self.value = value
+        else:
+            self.value = value[:250]
 
 
 class Tags:
@@ -337,10 +341,10 @@ class RecordNote:
         self.status = Status(status)
 
     def __str__(self):
-        return f"Name: {self.name.value} Note: {self.note} Tags: {self.tags} Status: {self.status.value}"
+        return f"Name: {self.name.value} Note: {self.note.value} Tags: {self.tags} Status: {self.status.value}"
 
     def __repr__(self):
-        return f"Name: {self.name.value} Note: {self.note} Tags: {self.tags} Status: {self.status.value}"
+        return f"Name: {self.name.value} Note: {self.note.value} Tags: {self.tags} Status: {self.status.value}"
 
 
 class NoteBook(UserDict):
@@ -371,6 +375,10 @@ class NoteBook(UserDict):
             if k == name:
                 self.data[k].note = new_note
 
+    def show_record(self, name):
+        if name in self.data.keys():
+            return self.data[name]
+
     def show_note(self, name):
         for k in self.data:
             if k == name:
@@ -383,24 +391,42 @@ class NoteBook(UserDict):
                 self.data.pop(a)
                 return deleted_note
 
-    def add_tag(self, new_tag):
-        my_tag = Tags(new_tag)
-        if my_tag.value not in [i.value for i in self.tags]:
-            self.tags.append(my_tag)
+    def delete_tag(self, name, del_tag):
+        old_tags = self.data[name].tags
+        new_tags = [tag for tag in old_tags if tag.value != del_tag]
+        self.data[name].tags = new_tags
+
+    def add_tag(self, name, new_tag):
+        if new_tag.value not in [i.value for i in self.data[name].tags]:
+            self.data[name].tags.append(new_tag)
 
     def find_info_by_name(self, keyword):
         for name, record in self.data.items():
-            if keyword == "name":
+            if keyword == name:
                 return self.data[keyword]
 
-    def get_tags(self):
-        tags_list = []
-        for rec in self.values():
-            for t in rec.tags:
-                tags_list.append(str(t))
-        if len(tags_list) > 0:
-            tags_set = sorted(set(tags_list), reverse=False)
-            return tags_set
+    def find_info_by_tag(self, keyword):
+        result = []
+        for name, record in self.data.items():
+            for tag in record.tags:
+                if keyword == tag.value:
+                    result.append(self.data[name])
+        return result
+
+    def find_info_by_status(self, keyword):
+        result = []
+        for name, record in self.data.items():
+            if keyword == record.status.value:
+                result.append(self.data[name])
+        return result
+
+    def get_tags(self, name):
+        return self.data[name].tags
+
+    def change_tag(self, name, old_tag, new_tag):
+        for i in range(len(self.data[name].tags)):
+            if old_tag.value == self.data[name].tags[i].value:
+                self.data[name].tags[i].value = new_tag.value
 
     def serialize(self, file_name="notebook.bin"):
         with open(file_name, 'wb') as file:

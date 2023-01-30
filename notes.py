@@ -36,6 +36,8 @@ def add():
         else:
             name = classes.NoteName(name)
             break
+    if name == "cancel":
+        return "Adding a new note has been canceled"
     name = classes.NoteName(name)
     note = input(f"Type {name.value}'s note: ")
     if note.lower() == "cancel":
@@ -114,7 +116,7 @@ def change():
                         if new_tag.lower() == "cancel":
                             return "Changing has been canceled"
                         else:
-                            new_tag = classes.Tag(new_tag)
+                            new_tag = classes.Tags(new_tag)
                         if new_tag.value:
                             NOTES_BOOK.add_tag(name, new_tag)
                             return f"Tag {new_tag.value} has been added"
@@ -135,15 +137,12 @@ def change():
                             "Type tag you want to change: ")
                         if old_tag.lower() == "cancel":
                             return "Changing has been canceled"
-                        old_tag = classes.Tag(old_tag)
-                        tags_list = [
-                            tag.value for tag in NOTES_BOOK.get_tags(name)]
-                        if old_tag.value in tags_list:
+                        if old_tag in [tag.value for tag in NOTES_BOOK.get_tags(name)]:
                             while True:
                                 new_tag = input("Type a new tag: ")
                                 if new_tag.lower() == "cancel":
                                     return "Changing has been canceled"
-                                new_tag = classes.Tag(new_tag)
+                                new_tag = classes.Tags(new_tag)
                                 if new_tag.value == None:
                                     while True:
                                         answer = input(
@@ -155,12 +154,28 @@ def change():
                                         else:
                                             print("Wrong command")
                                 else:
-                                    tags = NOTES_BOOK.gat_tags(name)
-                                    for i in range(len(tags)):
-                                        if tags[i].value == old_tag.value:
-                                            tags[i] = new_tag
-                                    NOTES_BOOK.change_tags(name, tags)
+                                    old_tag = classes.Tags(old_tag)
+                                    NOTES_BOOK.change_tag(
+                                        name, old_tag, new_tag)
                                     return f"Tag {old_tag.value} has been changed to {new_tag.value}"
+                elif command == "dell":
+                    while True:
+                        tag = input("Please type a tag you want to delete ")
+                        if tag == "cancel":
+                            return f"You canceled changing contact {name}"
+                        if NOTES_BOOK.find_info_by_tag(tag):
+                            NOTES_BOOK.delete_tag(name, tag)
+                            return f"Tag {tag} has been deleted"
+                        else:
+                            while True:
+                                answer = input(
+                                    "Such tag didn't exist, would you like to try one more time? (y/n)")
+                                if answer.lower() in ["cancel", "n"]:
+                                    return "Deleting has been canceled"
+                                if answer.lower() == "y":
+                                    break
+                                else:
+                                    print("Wrong command")
                 else:
                     answer = input(
                         "Please, type the tag. Would you like to try one more time? (y/n): ")
