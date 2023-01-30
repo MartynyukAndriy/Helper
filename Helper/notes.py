@@ -1,8 +1,14 @@
-import classes
+from Helper import classes
 from pathlib import Path
+import os
+
 
 NOTEBOOK_FILE_NAME = "notebook.bin"
-NOTEBOOK_SERIALIZATION_PATH = Path(NOTEBOOK_FILE_NAME)
+CONTACT_DIR = "C:\Program Files\Helper"
+os.makedirs(
+    rf"{CONTACT_DIR}", exist_ok=True)
+ABSOLUTE_NOTE_PATH = rf"{CONTACT_DIR}\{NOTEBOOK_FILE_NAME}"
+NOTEBOOK_SERIALIZATION_PATH = Path(ABSOLUTE_NOTE_PATH)
 
 NOTES_BOOK = classes.NoteBook()
 
