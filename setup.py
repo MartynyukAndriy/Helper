@@ -10,5 +10,7 @@ setup(
     license='MIT',
     include_package_data=True,
     packages=find_namespace_packages(),
+    data_files=[("Helper", ["Helper/address_book.py", "Helper/addressbook.bin", "Helper/bot.py",
+                 "Helper/classes.py", "Helper/notebook.bin", "Helper/notes.py", "Helper/sort.py", "Helper/translate.py"])],
     entry_points={'console_scripts': ['helper = Helper.helper:main']}
 )

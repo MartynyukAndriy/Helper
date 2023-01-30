@@ -2,12 +2,19 @@ from collections import UserDict
 from datetime import datetime
 import pickle
 from pathlib import Path
+import os
 
 
-import classes
+from Helper import classes
+
 
 CONTACT_FILE_NAME = "addressbook.bin"
-CONTACT_SERIALIZATION_PATH = Path(CONTACT_FILE_NAME)
+CONTACT_DIR = "C:\Program Files\Helper"
+os.makedirs(
+    rf"{CONTACT_DIR}", exist_ok=True)
+CONTACT_FILE_NAME = "addressbook.bin"
+ABSOLUTE_CONTACT_PATH = rf"{CONTACT_DIR}\{CONTACT_FILE_NAME}"
+CONTACT_SERIALIZATION_PATH = Path(ABSOLUTE_CONTACT_PATH)
 
 ADDRESS_BOOK = classes.AddressBook()
 
@@ -512,6 +519,6 @@ def main():
 
 if __name__ == "__main__":
     if CONTACT_SERIALIZATION_PATH.exists():
-        ADDRESS_BOOK.deserialize(CONTACT_FILE_NAME)
+        ADDRESS_BOOK.deserialize(ABSOLUTE_CONTACT_PATH)
     main()
-    ADDRESS_BOOK.serialize()
+    ADDRESS_BOOK.serialize(ABSOLUTE_CONTACT_PATH)

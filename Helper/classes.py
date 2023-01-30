@@ -7,8 +7,8 @@ import copy
 import os
 
 
-FILE_NAME = "addressbook.bin"
-SERIALIZATION_PATH = Path(FILE_NAME)
+# FILE_NAME = "addressbook.bin"
+# SERIALIZATION_PATH = Path(FILE_NAME)
 
 
 class AddressBook(UserDict):
