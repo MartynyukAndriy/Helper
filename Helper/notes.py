@@ -22,8 +22,8 @@ def help():
     print(f"add:     Adds a note to the notebook.\n", "-"*90)
     print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n", "-"*90)
     print(f"change:  Changes the information in the note: name / note / tag / status.\n", "-"*90)
-    print(f"show:    Show notes as much as the user specifies.\n", "-"*90)
-    print(f"showall: Show all notes.\n", "-"*90)
+    print(f"shownote:Show note which the user want to see.\n", "-"*90)
+    print(f"show:    Show all notes.\n", "-"*90)
     print(f"del:     Deleting a note, or deleting completed notes.\n", "-"*90)
     print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*90)
     print(f"good bye, close, exit: Exit the program.\n", "-"*90)
@@ -67,7 +67,7 @@ def add():
         return "Adding a new note has been canceled"
     else:
         note = classes.Notes(note)
-    tag = input(f"Type {name.value}'s tags: ")
+    tag = input(f"Type {name.value}'s tag: ")
     if tag.lower() == "cancel":
         return "Adding a new tag has been canceled"
     else:
@@ -83,29 +83,30 @@ def search():
         if result.lower() == "name":
             result = input("What you want to find: ")
             if result == "cancel":
-                return "Searching has been canceled"
+                print("Searching has been canceled")
             if NOTES_BOOK.find_info_by_name(result):
-                return NOTES_BOOK.find_info_by_name(result)
+                showing_func(NOTES_BOOK.find_info_by_name(result))
             else:
-                return "Nothing match to result"
+                print("Nothing match to result")
         elif result.lower() == "tag":
             result = input("What you want to find: ")
             if result == "cancel":
-                return "Searching has been canceled"
+                print("Searching has been canceled")
             if NOTES_BOOK.find_info_by_tag(result.lower()):
-                return NOTES_BOOK.find_info_by_tag(result.lower())
+                showing_func(NOTES_BOOK.find_info_by_tag(result.lower()))
             else:
-                return "Nothing match to result"
+                print("Nothing match to result")
         elif result.lower() == "status":
             result = input("What you want to find: ")
             if result == "cancel":
-                return "Searching has been canceled"
+                print("Searching has been canceled")
             if NOTES_BOOK.find_info_by_status(result):
-                return NOTES_BOOK.find_info_by_status(result)
+                showing_func(NOTES_BOOK.find_info_by_status(result))
             else:
-                return "Nothing match to result"
+                print("Nothing match to result")
         elif result.lower() == "cancel":
-            return "Serching has been canceled"
+            print("Serching has been canceled")
+            break
         else:
             print("Wrong command")
 
@@ -232,8 +233,10 @@ def change():
 
 
 def dellate_note():
-    command = input("Do you want to delete one note? (y/n) ")
     while True:
+        command = input("Do you want to delete one note? (y/n) ")
+        if command.lower() == "cancel":
+            return "You have canceled deleting"
         if command.lower() == "y":
             note = input("Which note do you want to delete? ")
             if note in NOTES_BOOK.data.keys():
@@ -256,8 +259,8 @@ def dellate_note():
                 if answer.lower() in ["cancel"]:
                     return "You have canceled deleting"
                 if answer.lower() == "y":
-                    NOTES_BOOK.dellete_notes_by_status("Done")
-                    return f"Notes with status Done has been deleted"
+                    NOTES_BOOK.dellete_notes_by_status("done")
+                    return f"Notes with status 'done' has been deleted"
                 elif command.lower() == "cancel":
                     return "You have canceled deleting"
                 else:
@@ -270,10 +273,69 @@ def dellate_note():
                             return "You have canceled deleting"
                         else:
                             print("Wrong command")
+        else:
+            print("Wrong command")
+        
+
+
+def show_note():
+    name = input("Which note do you want to see? ")
+    if name.lower() == "cancel":
+        return "Showing has been canceled"
+    if NOTES_BOOK.show_record(name):
+        return NOTES_BOOK.show_record(name)
+    else:
+        return "Nothing match"
 
 
 def show_all():
-    return NOTES_BOOK.show_records()
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^25} | {'Note':^70} | {'Tags':^29} | {'Status':^11} |\n", "-"*150)
+    for info in NOTES_BOOK.show_records().values():
+        if len(info.name.value) > 24:
+            name[:22]+'...'
+        else:
+            name = info.name.value
+        if len(info.tags) == 1:
+            tags = info.tags[0].value
+        elif len(info.tags) > 1:
+            tags_l = []
+            for tag in [tag.value for tag in info.tags]:
+                tags_l.append(tag)
+            tags = ", ".join(tags_l)
+        tags = tags if len(tags) < 29 else tags[:25]+"..."
+        note = info.note.value
+        note = note if len(note) < 70 else note[:66]+"..."
+        status = info.status.value
+        print(
+            f"{counter:<2} | {name:<25} | {note:<70} | {tags:<29} | {status:<11} |\n", "-"*150)
+        counter += 1
+
+
+def showing_func(lst):
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^25} | {'Note':^70} | {'Tags':^29} | {'Status':^11} |\n", "-"*150)
+    for info in lst:
+        if len(info.name.value) > 24:
+            name[:22]+'...'
+        else:
+            name = info.name.value
+        if len(info.tags) == 1:
+            tags = info.tags[0].value
+        elif len(info.tags) > 1:
+            tags_l = []
+            for tag in [tag.value for tag in info.tags]:
+                tags_l.append(tag)
+            tags = ", ".join(tags_l)
+        tags = tags if len(tags) < 29 else tags[:25]+"..."
+        note = info.note.value
+        note = note if len(note) < 70 else note[:66]+"..."
+        status = info.status.value
+        print(
+            f"{counter:<2} | {name:<25} | {note:<70} | {tags:<29} | {status:<11} |\n", "-"*150)
+        counter += 1
 
 
 def end_work():
@@ -286,6 +348,7 @@ COMMANDS = {"hello": hello,
             "search": search,
             "change": change,
             "show": show_all,
+            "shownote": show_note,
             "del": dellate_note,
             "end_work": end_work}
 
@@ -305,6 +368,8 @@ def parser(command):
         return "change"
     if command.split()[0].lower() == "show":
         return "show"
+    if command.split()[0].lower() == "shownote":
+        return "shownote"
     if command.split()[0].lower() == "del":
         return "del"
     else:
@@ -312,9 +377,9 @@ def parser(command):
 
 
 def main():
+    print("Hello. If you need help, write 'help'")
     while True:
-        user_command = input(
-            "If you need help, write 'help'\nWrite command >> ")
+        user_command = input(">>> ")
         command = parser(user_command)
         if command == "end_work":
             print(COMMANDS["end_work"]())
@@ -325,11 +390,17 @@ def main():
         if command == "help":
             print(COMMANDS["help"]())
             continue
+        if command == "shownote":
+            print(COMMANDS["shownote"]())
+            continue
         if command == "show":
-            print(COMMANDS["show"]())
+            COMMANDS["show"]()
             continue
         if command == "wrong_command":
             print("Wrong command")
+            continue
+        if command == "search":
+            COMMANDS[command]()
             continue
         print(COMMANDS[command]())
 
