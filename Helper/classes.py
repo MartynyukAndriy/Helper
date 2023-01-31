@@ -307,8 +307,8 @@ class NoteName:
 
 class Status:
 
-    def __init__(self, value="In progress"):
-        self.value = "In progress"
+    def __init__(self, value="in progress"):
+        self.value = "in progress"
 
     def __repr__(self):
         return f'{self.value}'
@@ -376,8 +376,8 @@ class NoteBook(UserDict):
                 self.data[k].note = new_note
 
     def change_status(self, name, new_status):
-        if new_status in ["In progress", "Done"]:
-            self.data[name].status.value = new_status
+        if new_status.lower() in ["in progress", "done"]:
+            self.data[name].status.value = new_status.lower()
 
     def show_record(self, name):
         if name in self.data.keys():
@@ -412,22 +412,26 @@ class NoteBook(UserDict):
             self.data[name].tags.append(new_tag)
 
     def find_info_by_name(self, keyword):
+        result = []
         for name, record in self.data.items():
-            if keyword == name:
-                return self.data[keyword]
+            if keyword.lower() == name.lower():
+                result.append(self.data[name])
+                break
+        return result
 
     def find_info_by_tag(self, keyword):
         result = []
         for name, record in self.data.items():
             for tag in record.tags:
-                if keyword == tag.value:
+                if keyword.lower() == tag.value.lower():
                     result.append(self.data[name])
+                    break
         return result
 
     def find_info_by_status(self, keyword):
         result = []
         for name, record in self.data.items():
-            if keyword == record.status.value:
+            if keyword.lower() == record.status.value.lower():
                 result.append(self.data[name])
         return result
 

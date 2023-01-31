@@ -149,18 +149,17 @@ def search():
             result = input("What you want to find: ")
             if ADDRESS_BOOK.find_info_by_name(result) and ADDRESS_BOOK.find_info_by_name(result) != "Nothing found":
                 showrecord(ADDRESS_BOOK.find_info_by_name(result))
-                break
             else:
                 print(f"Nothing match with {result}")
         elif result.lower() == "phone":
             result = input("What you want to find: ")
             if ADDRESS_BOOK.find_info_by_phone(result) and ADDRESS_BOOK.find_info_by_phone(result) != "Nothing found":
                 showrecord(ADDRESS_BOOK.find_info_by_phone(result))
-                break
             else:
                 print(f"Nothing match with {result}")
         elif result.lower() == "cancel":
-            return "Serching has been canceled"
+            print("Serching has been canceled")
+            break
         else:
             print("Wrong command")
 
