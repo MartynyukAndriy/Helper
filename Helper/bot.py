@@ -134,8 +134,8 @@ def add():
 def birthdays():
     days = input("How many days? ")
     if days.isnumeric():
-        if ADDRESS_BOOK.get_contacts_by_birthday(int(days)):
-            ADDRESS_BOOK.show_contacts_by_birthday(int(days))
+        if ADDRESS_BOOK.show_contacts_by_birthday(int(days)):
+            showrecord(ADDRESS_BOOK.show_contacts_by_birthday(int(days)))
         else:
             print(f"Nothing is match")
     else:
@@ -147,18 +147,18 @@ def search():
         result = input("Choose what you want to find (name / phone): ")
         if result.lower() == "name":
             result = input("What you want to find: ")
-            if ADDRESS_BOOK.find_info_by_name(result):
-                ADDRESS_BOOK.show_contacts_by_name(
-                    ADDRESS_BOOK.find_info_by_name(result))
+            if ADDRESS_BOOK.find_info_by_name(result) and ADDRESS_BOOK.find_info_by_name(result) != "Nothing found":
+                showrecord(ADDRESS_BOOK.find_info_by_name(result))
+                break
             else:
-                print("Nothing match with {result}")
+                print(f"Nothing match with {result}")
         elif result.lower() == "phone":
             result = input("What you want to find: ")
-            if ADDRESS_BOOK.find_info_by_phone(result):
-                ADDRESS_BOOK.show_contacts_by_phone(
-                    ADDRESS_BOOK.find_info_by_phone(result))
+            if ADDRESS_BOOK.find_info_by_phone(result) and ADDRESS_BOOK.find_info_by_phone(result) != "Nothing found":
+                showrecord(ADDRESS_BOOK.find_info_by_phone(result))
+                break
             else:
-                print("Nothing match with {result}")
+                print(f"Nothing match with {result}")
         elif result.lower() == "cancel":
             return "Serching has been canceled"
         else:
@@ -276,7 +276,7 @@ def change():
                 if new_address.lower() == "cancel":
                     return "Changing has been canceled"
                 ADDRESS_BOOK.change_address(contact, new_address)
-                return f"Address for contact {contact} changed to {new_name}"
+                return f"Address for contact {contact} changed to {new_address}"
             elif item.lower() == "email":
                 while True:
                     new_email = input(
@@ -320,12 +320,15 @@ def change():
             elif item.lower() == "cancel":
                 return "Changing has been canceled"
             else:
-                answer = input(
-                    "You have such options: (name / phone / address / email / birthday). Would you like to try one more time? (y/n)")
-                if answer.lower() == "y":
-                    continue
-                else:
-                    break
+                while True:
+                    answer = input(
+                        "You have such options: (name / phone / address / email / birthday). Would you like to try one more time? (y/n)")
+                    if answer.lower() == "y":
+                        break
+                    elif answer.lower() in ["n", "cancel"]:
+                        return "Changing has been canceled"
+                    else:
+                        print("Wrong command")
     else:
         return f"{contact} didn't exist"
 
@@ -450,6 +453,32 @@ def show():
             break
 
 
+def showrecord(lst):
+    counter = 1
+    print(
+        f"{'№':^2} | {'Name':^20} | {'Phones':^35} | {'Email':^35} | {'Address':^35} | {'Birthday':^10} |")
+    for info in lst:
+        name = info.name.value if len(
+            info.name.value) < 20 else name[:17]+'...'
+        if len(info.phones) == 1:
+            contacts = info.phones[0].value
+        elif len(info.phones) > 1:
+            contacts = [contact.value for contact in info.phones]
+            contacts = ", ".join(contacts)
+            contacts = contacts if len(
+                contacts) < 34 else contacts[:32]+"..."
+        else:
+            contacts = "None"
+        address = info.address.value if info.address.value else "None"
+        address = address if len(address) < 35 else address[:32]+"..."
+        email = info.email.value if info.email.value else "None"
+        email = email if len(email) < 35 else email[:32]+"..."
+        birthday = info.birthday.value if info.birthday.value else "None"
+        print(
+            f"{counter:<2} | {name:<20} | {contacts:<35} | {email:<35} | {address:<35} | {birthday:<10} |")
+        counter += 1
+
+
 def end_work():
     return "Good bye"
 
@@ -509,6 +538,9 @@ def main():
             COMMANDS[command]()
             continue
         if command == "birthdays":
+            COMMANDS[command]()
+            continue
+        if command == "search":
             COMMANDS[command]()
             continue
         if command == "wrong_command":

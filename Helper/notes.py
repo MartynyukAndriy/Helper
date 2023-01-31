@@ -287,12 +287,10 @@ def show_all():
     print(
         f"{'№':^2} | {'Name':^25} | {'Note':^70} | {'Tags':^29} | {'Status':^11} |")
     for info in NOTES_BOOK.show_records().values():
-        # name = info.name.value
         if len(info.name.value) > 24:
             name[:22]+'...'
         else:
             name = info.name.value
-        # tags = info.tags.value if len(info.tags.value) < 10 else tags[:12]+'...'
         if len(info.tags) == 1:
             tags = info.tags[0].value
         elif len(info.tags) > 1:

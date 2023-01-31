@@ -97,7 +97,7 @@ class AddressBook(UserDict):
             return "Nothing found"
 
     def show_contacts_by_birthday(self, days):
-        result = [self.data[record] for record in self.data if self.data[record].birthday and self.data[record].days_to_birthday()
+        result = [self.data[record] for record in self.data if self.data[record].birthday.value != None and self.data[record].days_to_birthday()
                   <= days]
         return result
 
