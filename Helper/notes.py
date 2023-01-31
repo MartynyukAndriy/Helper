@@ -272,40 +272,42 @@ def dellate_note():
                             print("Wrong command")
 
 
-
 def show_note():
     name = input("Which note do you want to see? ")
     if name.lower() == "cancel":
         return "Showing has been canceled"
     if NOTES_BOOK.show_record(name):
         return NOTES_BOOK.show_record(name)
-            
+    else:
+        return "Nothing match"
+
 
 def show_all():
     counter = 1
     print(
-        f"{'№':^2} | {'Name':^25} | {'Note':^80} | {'Tags':^15} | {'Status':^15} |")
+        f"{'№':^2} | {'Name':^25} | {'Note':^70} | {'Tags':^29} | {'Status':^11} |")
     for info in NOTES_BOOK.show_records().values():
-        # name = info.name.value 
-        if len(info.name.value) > 20: 
-            name[:22]+'...'     
+        # name = info.name.value
+        if len(info.name.value) > 24:
+            name[:22]+'...'
         else:
             name = info.name.value
         # tags = info.tags.value if len(info.tags.value) < 10 else tags[:12]+'...'
         if len(info.tags) == 1:
             tags = info.tags[0].value
         elif len(info.tags) > 1:
-            for tag in info.tags.value:
-                tags_l = []
+            tags_l = []
+            for tag in [tag.value for tag in info.tags]:
                 tags_l.append(tag)
-                tags = ", ".join(tags_l)
-        tags = tags if len(tags) < 10 else tags[:12]+"..."
+            tags = ", ".join(tags_l)
+        tags = tags if len(tags) < 29 else tags[:25]+"..."
         note = info.note.value
-        note = note if len(note) < 70 else note[:77]+"..."
+        note = note if len(note) < 70 else note[:66]+"..."
         status = info.status.value
         print(
-            f"{counter:<2} | {name:<25} | {note:<80} | {tags:<15} | {status:<15} |\n","-"*150)
+            f"{counter:<2} | {name:<25} | {note:<70} | {tags:<29} | {status:<11} |\n", "-"*150)
         counter += 1
+
 
 def end_work():
     return "Good bye"
@@ -363,7 +365,7 @@ def main():
             print(COMMANDS["shownote"]())
             continue
         if command == "show":
-            print(COMMANDS["show"]())
+            COMMANDS["show"]()
             continue
         if command == "wrong_command":
             print("Wrong command")
