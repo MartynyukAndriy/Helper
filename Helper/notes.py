@@ -22,7 +22,7 @@ def help():
     print(f"add:     Adds a note to the notebook.\n", "-"*90)
     print(f"search:  Searches for notes in the notebook by the following fields: name / tag / status.\n", "-"*90)
     print(f"change:  Changes the information in the note: name / note / tag / status.\n", "-"*90)
-    print(f"shownote:Show notes as much as the user specifies.\n", "-"*90)
+    print(f"shownote:Show note which the user want to see.\n", "-"*90)
     print(f"show:    Show all notes.\n", "-"*90)
     print(f"del:     Deleting a note, or deleting completed notes.\n", "-"*90)
     print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*90)
