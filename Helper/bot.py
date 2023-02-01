@@ -25,14 +25,15 @@ def hello():
 
 def help():
     print(f"To start working with the assistant, write one of the commands.\nCommand. Description.\n", "-"*115)
-    print(f"add:     Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n", "-"*115)
-    print(f"search:  Searches for contacts in the address book by the following fields: name / phone.\n", "-"*115)
-    print(f"change:  Changes the information in the contact: name / phone / address / email / birthday.\n", "-"*115)
-    print(f"show:    Show contacts as much as the user specifies.\n", "-"*115)
-    print(f"showall: Show all notes.\n", "-"*115)
-    print(f"del:     Deleting a contact, or deleting phone / address / email / birthday in contact.\n", "-"*115)
-    print(f"cancel:  An undo command anywhere in the assistant.\n", "-"*115)
-    print(f"birthdays: Shows the number of days until someone's birthday.\n", "-"*115)
+    print(f"add:          Adds a contact to the addressbook. Fields for writing phone, address, email, birthday, are not mandatory.\n", "-"*115)
+    print(f"search:       Searches for contacts in the address book by the following fields: name / phone.\n", "-"*115)
+    print(f"change:       Changes the information in the contact: name / phone / address / email / birthday.\n", "-"*115)
+    print(f"show:         Show contacts as much as the user specifies.\n", "-"*115)
+    print(f"showcontact:  Show exact contact user specifies.\n", "-"*115)
+    print(f"showall:      Show all notes.\n", "-"*115)
+    print(f"del:          Deleting a contact, or deleting phone / address / email / birthday in contact.\n", "-"*115)
+    print(f"cancel:       An undo command anywhere in the assistant.\n", "-"*115)
+    print(f"birthdays:    Shows the number of days until someone's birthday.\n", "-"*115)
     print(f"good bye, close, exit: Exit the program.\n", "-"*115)
     command = input("Press any key to return. ")
     if command.lower() == "cancel":
@@ -414,6 +415,17 @@ def show_all():
         counter += 1
 
 
+def showcontact():
+    while True:
+        contact = input("Which contact yoou want to see? ")
+        if contact.lower() == "cancel":
+            return "You have canceled showing"
+        if ADDRESS_BOOK.show_record(contact):
+            return ADDRESS_BOOK.show_record(contact)
+        else:
+            return "Nothing match"
+
+
 def show():
     while True:
         n = input("How many records you want to see? ")
@@ -491,7 +503,8 @@ COMMANDS = {"hello": hello,
             "showall": show_all,
             "show": show,
             "del": del_record,
-            "end_work": end_work}
+            "end_work": end_work,
+            "showcontact": showcontact}
 
 
 def parser(command):
@@ -509,8 +522,8 @@ def parser(command):
         return "change"
     if command.split()[0].lower() == "showall":
         return "showall"
-    if command.split()[0].lower() == "show":
-        return "show"
+    if command.split()[0].lower() in ["show", "showcontact"]:
+        return command.split()[0].lower()
     if command.split()[0].lower() == "birthdays":
         return "birthdays"
     if command.split()[0].lower() == "del":
@@ -535,6 +548,9 @@ def main():
             continue
         if command in ["show", "showall"]:
             COMMANDS[command]()
+            continue
+        if command == "showcontact":
+            print(COMMANDS[command]())
             continue
         if command == "birthdays":
             COMMANDS[command]()
