@@ -70,18 +70,18 @@ def get_and_rename_files_names(path):
         if entry.is_file():
             try:
                 for key, values in EXTENSIONS.items():
-                    if str(entry).split(".")[1].lower() in values:
+                    if str(entry).split(".")[-1].lower() in values:
                         os.chdir(path_obj)
                         os.rename(entry.name, normalize(entry.name))
                         names_dict[key].append(normalize(entry.name))
-                        known_extension.add(str(entry).split(".")[1].lower())
+                        known_extension.add(str(entry).split(".")[-1].lower())
                         break
-                if str(entry).split(".")[1].lower() not in known_extension:
+                if str(entry).split(".")[-1].lower() not in known_extension:
                     os.chdir(path_obj)
                     os.rename(entry.name, normalize(entry.name))
                     names_dict["unknown"].append(
                         normalize(entry.name))
-                    unknown_extension.add(str(entry).split(".")[1].lower())
+                    unknown_extension.add(str(entry).split(".")[-1].lower())
             except IndexError as e:
                 names_dict["unknown"].append(entry.name)
         else:
@@ -99,7 +99,7 @@ def create_folders(path):
         if values:
             for value in values:
                 os.makedirs(
-                    rf"{path}\{key}\{value.split('.')[1].lower()}", exist_ok=True)
+                    rf"{path}\{key}\{value.split('.')[-1].lower()}", exist_ok=True)
 
 
 def remove_files(path):
@@ -127,14 +127,14 @@ def remove_files(path):
                     if file.name in values:
                         try:
                             shutil.move(
-                                rf"{file}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
+                                rf"{file}", rf"{DIR_PATH}\{key}\{str(file).split('.')[-1].lower()}")
                         except shutil.Error:
                             os.rename(str(file), str(
-                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}'))
+                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[-1]}'))
                             new_name = str(
-                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[1]}')
+                                f'{str(file).split(".")[0]}_{counter}.{str(file).split(".")[-1]}')
                             shutil.move(
-                                rf"{new_name}", rf"{DIR_PATH}\{key}\{str(file).split('.')[1].lower()}")
+                                rf"{new_name}", rf"{DIR_PATH}\{key}\{str(file).split('.')[-1].lower()}")
                             counter += 1
         except Exception as e:
             remove_files_info_logs.append(e)
@@ -152,7 +152,7 @@ def deleted_folders(path):
             if file.is_dir():
                 deleted_folders(f'{path}\{file.name}')
                 os.rmdir(file)
-        except:
+        except OSError as e:
             deleted_folders_info_logs.append(f"Folder {file} is not empty")
     return f"Deleted folders info logs: {deleted_folders_info_logs}"
 
@@ -202,6 +202,7 @@ def clean():
                                 for value in names_dict["archives"]])
         if existed_archives:
             unpack_archives(DIR_PATH)
+        deleted_folders(DIR_PATH)
         deleted_folders(DIR_PATH)
         print(f"Folder {DIR_PATH} has been cleaned")
 
